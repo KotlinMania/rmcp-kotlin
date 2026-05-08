@@ -1031,7 +1031,7 @@ If you want to use dev container, see [docs/DEVCONTAINER.md](https://github.com/
 
 ```kotlin
 dependencies {
-    implementation("io.github.kotlinmania:rmcp-kotlin:0.1.0-SNAPSHOT")
+    implementation("io.github.kotlinmania:rmcp-kotlin:0.1.0")
 }
 ```
 
