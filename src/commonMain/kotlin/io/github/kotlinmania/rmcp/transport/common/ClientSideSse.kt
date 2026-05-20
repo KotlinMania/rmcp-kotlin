@@ -3,6 +3,7 @@ package io.github.kotlinmania.rmcp.transport.common
 
 import io.github.kotlinmania.rmcp.model.ServerJsonRpcMessage
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
 import kotlin.math.pow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -131,7 +132,7 @@ class SseAutoReconnectStream<R, E>(
                     val data = sse.data ?: continue
                     val parsed = runCatching { Json.parseToJsonElement(data) }
                         .getOrElse { continue }
-                    return Result.success(parsed)
+                    return runCatching { Json.decodeFromJsonElement<ServerJsonRpcMessage>(parsed) }
                 }
 
                 is SseAutoReconnectStreamState.Retrying -> {
