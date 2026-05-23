@@ -57,10 +57,18 @@ kotlin {
         binaries.framework { baseName = "Rmcp"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        binaries.framework { baseName = "Rmcp"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Rmcp"
+            isStatic = true
+            xcf.add(this)
+        }
     }
     iosX64 {
-        binaries.framework { baseName = "Rmcp"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Rmcp"
+            isStatic = true
+            xcf.add(this)
+        }
     }
 
     tvosArm64 {
