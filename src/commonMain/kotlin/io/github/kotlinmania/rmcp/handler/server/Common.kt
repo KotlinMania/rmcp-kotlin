@@ -9,9 +9,9 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
-import kotlinx.serialization.serializer
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.serializer
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
@@ -39,21 +39,24 @@ inline fun <reified T> schemaForOutput(): Result<JsonObject> =
         val schema = schemaForType<T>()
         when (val type = schema["type"]) {
             JsonPrimitive("object") -> Result.success(schema)
-            is JsonPrimitive -> Result.failure(
-                IllegalArgumentException(
-                    "MCP specification requires tool outputSchema to have root type 'object', but found '${type.content}'.",
-                ),
-            )
-            null -> Result.failure(
-                IllegalArgumentException(
-                    "Schema is missing 'type' field. MCP specification requires outputSchema to have root type 'object'.",
-                ),
-            )
-            else -> Result.failure(
-                IllegalArgumentException(
-                    "Schema 'type' field has unexpected format: $type. Expected \"object\".",
-                ),
-            )
+            is JsonPrimitive ->
+                Result.failure(
+                    IllegalArgumentException(
+                        "MCP specification requires tool outputSchema to have root type 'object', but found '${type.content}'.",
+                    ),
+                )
+            null ->
+                Result.failure(
+                    IllegalArgumentException(
+                        "Schema is missing 'type' field. MCP specification requires outputSchema to have root type 'object'.",
+                    ),
+                )
+            else ->
+                Result.failure(
+                    IllegalArgumentException(
+                        "Schema 'type' field has unexpected format: $type. Expected \"object\".",
+                    ),
+                )
         }
     }
 
@@ -85,35 +88,37 @@ internal fun schemaForDescriptor(descriptor: SerialDescriptor): JsonObject =
         PrimitiveKind.LONG,
         PrimitiveKind.SHORT,
         PrimitiveKind.BYTE,
-            -> buildJsonObject { put("type", JsonPrimitive("integer")) }
+        -> buildJsonObject { put("type", JsonPrimitive("integer")) }
 
         PrimitiveKind.FLOAT,
         PrimitiveKind.DOUBLE,
-            -> buildJsonObject { put("type", JsonPrimitive("number")) }
+        -> buildJsonObject { put("type", JsonPrimitive("number")) }
 
         PrimitiveKind.BOOLEAN -> buildJsonObject { put("type", JsonPrimitive("boolean")) }
         PrimitiveKind.STRING,
         PrimitiveKind.CHAR,
-            -> buildJsonObject { put("type", JsonPrimitive("string")) }
+        -> buildJsonObject { put("type", JsonPrimitive("string")) }
 
-        StructureKind.LIST -> buildJsonObject {
-            put("type", JsonPrimitive("array"))
-            put("items", schemaForDescriptor(descriptor.getElementDescriptor(0)))
-        }
+        StructureKind.LIST ->
+            buildJsonObject {
+                put("type", JsonPrimitive("array"))
+                put("items", schemaForDescriptor(descriptor.getElementDescriptor(0)))
+            }
 
         StructureKind.CLASS,
         StructureKind.OBJECT,
-            -> buildJsonObject {
-            put("type", JsonPrimitive("object"))
-            put(
-                "properties",
-                buildJsonObject {
-                    for (index in 0 until descriptor.elementsCount) {
-                        put(descriptor.getElementName(index), schemaForDescriptor(descriptor.getElementDescriptor(index)))
-                    }
-                },
-            )
-        }
+        ->
+            buildJsonObject {
+                put("type", JsonPrimitive("object"))
+                put(
+                    "properties",
+                    buildJsonObject {
+                        for (index in 0 until descriptor.elementsCount) {
+                            put(descriptor.getElementName(index), schemaForDescriptor(descriptor.getElementDescriptor(index)))
+                        }
+                    },
+                )
+            }
 
         else -> buildJsonObject { put("type", JsonPrimitive("object")) }
     }

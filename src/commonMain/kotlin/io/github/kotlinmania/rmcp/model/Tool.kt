@@ -101,9 +101,10 @@ data class Tool(
      * required by MCP specification.
      */
     inline fun <reified T> withOutputSchema(): Tool {
-        val schema = schemaForOutput<T>().getOrElse { error ->
-            throw IllegalArgumentException("Invalid output schema for tool '$name': ${error.message}", error)
-        }
+        val schema =
+            schemaForOutput<T>().getOrElse { error ->
+                throw IllegalArgumentException("Invalid output schema for tool '$name': ${error.message}", error)
+            }
         return copy(outputSchema = schema)
     }
 

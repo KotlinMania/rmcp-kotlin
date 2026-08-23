@@ -14,28 +14,23 @@ data class RawResource(
      * `file:///path/to/file` or `str:///content`.
      */
     val uri: String,
-
     /**
      * Name of the resource.
      */
     val name: String,
-
     /**
      * Human-readable title of the resource.
      */
     val title: String? = null,
-
     /**
      * Optional description of the resource.
      */
     val description: String? = null,
-
     /**
      * MIME type of the resource content, `text` or `blob`.
      */
     @SerialName("mimeType")
     val mimeType: String? = null,
-
     /**
      * The size of the raw resource content, in bytes, before base64 encoding or
      * any tokenization, if known.
@@ -44,12 +39,10 @@ data class RawResource(
      * window use.
      */
     val size: UInt? = null,
-
     /**
      * Optional list of icons for the resource.
      */
     val icons: List<Icon>? = null,
-
     /**
      * Optional additional metadata for this resource.
      */

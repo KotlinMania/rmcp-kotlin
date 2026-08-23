@@ -19,7 +19,6 @@ internal data class ToolNameValidationResult(
      * Whether the tool name is valid according to the specification.
      */
     val isValid: Boolean,
-
     /**
      * Array of warning messages about non-conforming aspects of the tool name.
      */
@@ -68,11 +67,13 @@ internal fun validateToolName(name: String): ToolNameValidationResult {
     }
 
     val validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-".toSet()
-    val invalidChars = name.asSequence()
-        .filter { it !in validChars }
-        .distinct()
-        .sorted()
-        .toList()
+    val invalidChars =
+        name
+            .asSequence()
+            .filter { it !in validChars }
+            .distinct()
+            .sorted()
+            .toList()
 
     if (invalidChars.isNotEmpty()) {
         val invalidCharsList = invalidChars.joinToString(", ") { "\"$it\"" }

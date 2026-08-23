@@ -13,18 +13,20 @@ import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-private val contentTestJson = Json {
-    explicitNulls = false
-}
+private val contentTestJson =
+    Json {
+        explicitNulls = false
+    }
 
 class ContentTest {
     @Test
     fun testImageContentSerialization() {
-        val imageContent = RawImageContent(
-            data = "base64data",
-            mimeType = "image/png",
-            meta = null,
-        )
+        val imageContent =
+            RawImageContent(
+                data = "base64data",
+                mimeType = "image/png",
+                meta = null,
+            )
 
         val json = contentTestJson.encodeToString(imageContent)
         println("ImageContent JSON: $json")
@@ -36,10 +38,11 @@ class ContentTest {
 
     @Test
     fun testAudioContentSerialization() {
-        val audioContent = RawAudioContent(
-            data = "base64audiodata",
-            mimeType = "audio/wav",
-        )
+        val audioContent =
+            RawAudioContent(
+                data = "base64audiodata",
+                mimeType = "audio/wav",
+            )
 
         val json = contentTestJson.encodeToString(audioContent)
         println("AudioContent JSON: $json")
@@ -51,18 +54,19 @@ class ContentTest {
 
     @Test
     fun testResourceLinkSerialization() {
-        val resourceLink = RawContent.ResourceLink(
-            RawResource(
-                uri = "file:///test.txt",
-                name = "test.txt",
-                title = null,
-                description = "A test file",
-                mimeType = "text/plain",
-                size = 100u,
-                icons = null,
-                meta = null,
-            ),
-        )
+        val resourceLink =
+            RawContent.ResourceLink(
+                RawResource(
+                    uri = "file:///test.txt",
+                    name = "test.txt",
+                    title = null,
+                    description = "A test file",
+                    mimeType = "text/plain",
+                    size = 100u,
+                    icons = null,
+                    meta = null,
+                ),
+            )
 
         val json = contentTestJson.encodeToString<RawContent>(resourceLink)
         println("ResourceLink JSON: $json")
@@ -75,7 +79,8 @@ class ContentTest {
 
     @Test
     fun testResourceLinkDeserialization() {
-        val json = """
+        val json =
+            """
             {
                 "type": "resource_link",
                 "uri": "file:///example.txt",
@@ -83,7 +88,7 @@ class ContentTest {
                 "description": "Example file",
                 "mimeType": "text/plain"
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val content = contentTestJson.decodeFromString<RawContent>(json)
 

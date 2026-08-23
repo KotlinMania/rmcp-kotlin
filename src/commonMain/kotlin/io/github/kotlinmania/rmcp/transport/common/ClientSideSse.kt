@@ -63,7 +63,8 @@ class NeverReconnect<E : Throwable>(
     private var error: E?,
 ) : SseStreamReconnect<E> {
     override fun retryConnection(lastEventId: String?): Result<BoxedSseResponse> =
-        Result.failure<BoxedSseResponse>(error ?: error("should not be called again"))
+        Result
+            .failure<BoxedSseResponse>(error ?: error("should not be called again"))
             .also { error = null }
 }
 
@@ -106,14 +107,16 @@ class SseAutoReconnectStream<R, E>(
                     }
 
                     val next = current.stream.next()
-                    val sse = next.getOrElse { error ->
-                        connector.handleStreamError(error, lastEventId)
-                        state = SseAutoReconnectStreamState.Retrying(
-                            retryTimes = 0,
-                            retrying = connector.retryConnection(lastEventId),
-                        )
-                        continue
-                    }
+                    val sse =
+                        next.getOrElse { error ->
+                            connector.handleStreamError(error, lastEventId)
+                            state =
+                                SseAutoReconnectStreamState.Retrying(
+                                    retryTimes = 0,
+                                    retrying = connector.retryConnection(lastEventId),
+                                )
+                            continue
+                        }
 
                     sse.retry?.let { serverRetryInterval = it }
                     sse.id?.let { lastEventId = it }
@@ -130,8 +133,9 @@ class SseAutoReconnectStream<R, E>(
                     }
 
                     val data = sse.data ?: continue
-                    val parsed = runCatching { Json.parseToJsonElement(data) }
-                        .getOrElse { continue }
+                    val parsed =
+                        runCatching { Json.parseToJsonElement(data) }
+                            .getOrElse { continue }
                     return runCatching { Json.decodeFromJsonElement<ServerJsonRpcMessage>(parsed) }
                 }
 
@@ -146,10 +150,11 @@ class SseAutoReconnectStream<R, E>(
                             val retryInterval = retryPolicy.retry(nextRetryTimes)
                             if (retryInterval != null) {
                                 val interval = serverRetryInterval?.let { maxOf(it, retryInterval) } ?: retryInterval
-                                state = SseAutoReconnectStreamState.WaitingNextRetry(
-                                    sleep = interval,
-                                    retryTimes = nextRetryTimes,
-                                )
+                                state =
+                                    SseAutoReconnectStreamState.WaitingNextRetry(
+                                        sleep = interval,
+                                        retryTimes = nextRetryTimes,
+                                    )
                             } else {
                                 state = SseAutoReconnectStreamState.Terminated
                                 return Result.failure(error)
@@ -159,10 +164,11 @@ class SseAutoReconnectStream<R, E>(
                 }
 
                 is SseAutoReconnectStreamState.WaitingNextRetry -> {
-                    state = SseAutoReconnectStreamState.Retrying(
-                        retryTimes = current.retryTimes,
-                        retrying = connector.retryConnection(lastEventId),
-                    )
+                    state =
+                        SseAutoReconnectStreamState.Retrying(
+                            retryTimes = current.retryTimes,
+                            retrying = connector.retryConnection(lastEventId),
+                        )
                 }
 
                 SseAutoReconnectStreamState.Terminated -> return null

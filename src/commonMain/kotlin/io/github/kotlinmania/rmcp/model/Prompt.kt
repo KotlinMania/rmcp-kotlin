@@ -3,8 +3,6 @@
 
 package io.github.kotlinmania.rmcp.model
 
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -20,6 +18,8 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * A prompt that can be used to generate text from a model.
@@ -112,22 +112,30 @@ sealed class PromptMessageContent {
     /**
      * Plain text content.
      */
-    data class Text(val text: String) : PromptMessageContent()
+    data class Text(
+        val text: String,
+    ) : PromptMessageContent()
 
     /**
      * Image content with base64-encoded data.
      */
-    data class Image(val image: ImageContent) : PromptMessageContent()
+    data class Image(
+        val image: ImageContent,
+    ) : PromptMessageContent()
 
     /**
      * Embedded server-side resource.
      */
-    data class Resource(val resource: EmbeddedResource) : PromptMessageContent()
+    data class Resource(
+        val resource: EmbeddedResource,
+    ) : PromptMessageContent()
 
     /**
      * A link to a resource that can be fetched separately.
      */
-    data class ResourceLink(val link: Annotated<RawResource>) : PromptMessageContent()
+    data class ResourceLink(
+        val link: Annotated<RawResource>,
+    ) : PromptMessageContent()
 
     companion object {
         fun text(text: String): PromptMessageContent =
@@ -178,13 +186,14 @@ data class PromptMessage(
             val base64 = Base64.Default.encode(data)
             return PromptMessage(
                 role = role,
-                content = PromptMessageContent.Image(
-                    RawImageContent(
-                        data = base64,
-                        mimeType = mimeType,
-                        meta = meta,
-                    ).optionalAnnotate(annotations),
-                ),
+                content =
+                    PromptMessageContent.Image(
+                        RawImageContent(
+                            data = base64,
+                            mimeType = mimeType,
+                            meta = meta,
+                        ).optionalAnnotate(annotations),
+                    ),
             )
         }
 
@@ -201,29 +210,31 @@ data class PromptMessage(
             resourceContentMeta: Meta?,
             annotations: Annotations?,
         ): PromptMessage {
-            val resourceContents = if (text != null) {
-                ResourceContents.TextResourceContents(
-                    uri = uri,
-                    mimeType = mimeType,
-                    text = text,
-                    meta = resourceContentMeta,
-                )
-            } else {
-                ResourceContents.BlobResourceContents(
-                    uri = uri,
-                    mimeType = mimeType,
-                    blob = "",
-                    meta = resourceContentMeta,
-                )
-            }
+            val resourceContents =
+                if (text != null) {
+                    ResourceContents.TextResourceContents(
+                        uri = uri,
+                        mimeType = mimeType,
+                        text = text,
+                        meta = resourceContentMeta,
+                    )
+                } else {
+                    ResourceContents.BlobResourceContents(
+                        uri = uri,
+                        mimeType = mimeType,
+                        blob = "",
+                        meta = resourceContentMeta,
+                    )
+                }
             return PromptMessage(
                 role = role,
-                content = PromptMessageContent.Resource(
-                    RawEmbeddedResource(
-                        meta = resourceMeta,
-                        resource = resourceContents,
-                    ).optionalAnnotate(annotations),
-                ),
+                content =
+                    PromptMessageContent.Resource(
+                        RawEmbeddedResource(
+                            meta = resourceMeta,
+                            resource = resourceContents,
+                        ).optionalAnnotate(annotations),
+                    ),
             )
         }
 
@@ -251,38 +262,47 @@ object PromptMessageContentSerializer : KSerializer<PromptMessageContent> {
         buildClassSerialDescriptor("PromptMessageContent")
 
     override fun serialize(encoder: Encoder, value: PromptMessageContent) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("PromptMessageContent can only be encoded as JSON")
-        val encoded = when (value) {
-            is PromptMessageContent.Text -> buildJsonObject {
-                put("type", JsonPrimitive("text"))
-                put("text", JsonPrimitive(value.text))
-            }
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("PromptMessageContent can only be encoded as JSON")
+        val encoded =
+            when (value) {
+                is PromptMessageContent.Text ->
+                    buildJsonObject {
+                        put("type", JsonPrimitive("text"))
+                        put("text", JsonPrimitive(value.text))
+                    }
 
-            is PromptMessageContent.Image -> buildJsonObject {
-                put("type", JsonPrimitive("image"))
-                put("data", JsonPrimitive(value.image.raw.data))
-                put("mimeType", JsonPrimitive(value.image.raw.mimeType))
-                value.image.raw.meta?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
-            }
+                is PromptMessageContent.Image ->
+                    buildJsonObject {
+                        put("type", JsonPrimitive("image"))
+                        put("data", JsonPrimitive(value.image.raw.data))
+                        put("mimeType", JsonPrimitive(value.image.raw.mimeType))
+                        value.image.raw.meta
+                            ?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
+                    }
 
-            is PromptMessageContent.Resource -> buildJsonObject {
-                put("type", JsonPrimitive("resource"))
-                put("resource", jsonEncoder.json.encodeToJsonElement(ResourceContents.serializer(), value.resource.raw.resource))
-                value.resource.raw.meta?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
-            }
+                is PromptMessageContent.Resource ->
+                    buildJsonObject {
+                        put("type", JsonPrimitive("resource"))
+                        put("resource", jsonEncoder.json.encodeToJsonElement(ResourceContents.serializer(), value.resource.raw.resource))
+                        value.resource.raw.meta
+                            ?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
+                    }
 
-            is PromptMessageContent.ResourceLink -> encodeResourceLink(jsonEncoder, value.link.raw)
-        }
+                is PromptMessageContent.ResourceLink -> encodeResourceLink(jsonEncoder, value.link.raw)
+            }
         jsonEncoder.encodeJsonElement(encoded)
     }
 
     override fun deserialize(decoder: Decoder): PromptMessageContent {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("PromptMessageContent can only be decoded as JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("PromptMessageContent can only be decoded as JSON")
         val obj = jsonDecoder.decodeJsonElement().jsonObject
-        val type = obj["type"]?.jsonPrimitive?.content
-            ?: throw SerializationException("missing prompt message content type")
+        val type =
+            obj["type"]?.jsonPrimitive?.content
+                ?: throw SerializationException("missing prompt message content type")
         return when (type) {
             "text" -> PromptMessageContent.Text(obj["text"]?.jsonPrimitive?.content.orEmpty())
             "resource_link" -> PromptMessageContent.ResourceLink(decodeResourceLink(obj).noAnnotation())

@@ -163,15 +163,25 @@ data class ToolResultContent(
 
 @Serializable(with = RawContentSerializer::class)
 sealed class RawContent : AnnotateAble {
-    data class Text(val value: RawTextContent) : RawContent()
+    data class Text(
+        val value: RawTextContent,
+    ) : RawContent()
 
-    data class Image(val value: RawImageContent) : RawContent()
+    data class Image(
+        val value: RawImageContent,
+    ) : RawContent()
 
-    data class Resource(val value: RawEmbeddedResource) : RawContent()
+    data class Resource(
+        val value: RawEmbeddedResource,
+    ) : RawContent()
 
-    data class Audio(val value: RawAudioContent) : RawContent()
+    data class Audio(
+        val value: RawAudioContent,
+    ) : RawContent()
 
-    data class ResourceLink(val value: RawResource) : RawContent()
+    data class ResourceLink(
+        val value: RawResource,
+    ) : RawContent()
 
     fun asText(): RawTextContent? =
         when (this) {
@@ -214,12 +224,13 @@ sealed class RawContent : AnnotateAble {
             Resource(
                 RawEmbeddedResource(
                     meta = null,
-                    resource = ResourceContents.TextResourceContents(
-                        uri = uri,
-                        mimeType = "text",
-                        text = content,
-                        meta = null,
-                    ),
+                    resource =
+                        ResourceContents.TextResourceContents(
+                            uri = uri,
+                            mimeType = "text",
+                            text = content,
+                            meta = null,
+                        ),
                 ),
             )
 
@@ -286,60 +297,70 @@ object RawContentSerializer : KSerializer<RawContent> {
         buildClassSerialDescriptor("RawContent")
 
     override fun serialize(encoder: Encoder, value: RawContent) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("RawContent can only be encoded as JSON")
-        val encoded = when (value) {
-            is RawContent.Text -> buildJsonObject {
-                put("type", JsonPrimitive("text"))
-                put("text", JsonPrimitive(value.value.text))
-                value.value.meta?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
-            }
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("RawContent can only be encoded as JSON")
+        val encoded =
+            when (value) {
+                is RawContent.Text ->
+                    buildJsonObject {
+                        put("type", JsonPrimitive("text"))
+                        put("text", JsonPrimitive(value.value.text))
+                        value.value.meta?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
+                    }
 
-            is RawContent.Image -> buildJsonObject {
-                put("type", JsonPrimitive("image"))
-                put("data", JsonPrimitive(value.value.data))
-                put("mimeType", JsonPrimitive(value.value.mimeType))
-                value.value.meta?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
-            }
+                is RawContent.Image ->
+                    buildJsonObject {
+                        put("type", JsonPrimitive("image"))
+                        put("data", JsonPrimitive(value.value.data))
+                        put("mimeType", JsonPrimitive(value.value.mimeType))
+                        value.value.meta?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
+                    }
 
-            is RawContent.Resource -> buildJsonObject {
-                put("type", JsonPrimitive("resource"))
-                put("resource", jsonEncoder.json.encodeToJsonElement(ResourceContents.serializer(), value.value.resource))
-                value.value.meta?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
-            }
+                is RawContent.Resource ->
+                    buildJsonObject {
+                        put("type", JsonPrimitive("resource"))
+                        put("resource", jsonEncoder.json.encodeToJsonElement(ResourceContents.serializer(), value.value.resource))
+                        value.value.meta?.let { put("_meta", jsonEncoder.json.encodeToJsonElement(Meta.serializer(), it)) }
+                    }
 
-            is RawContent.Audio -> buildJsonObject {
-                put("type", JsonPrimitive("audio"))
-                put("data", JsonPrimitive(value.value.data))
-                put("mimeType", JsonPrimitive(value.value.mimeType))
-            }
+                is RawContent.Audio ->
+                    buildJsonObject {
+                        put("type", JsonPrimitive("audio"))
+                        put("data", JsonPrimitive(value.value.data))
+                        put("mimeType", JsonPrimitive(value.value.mimeType))
+                    }
 
-            is RawContent.ResourceLink -> encodeResourceLink(jsonEncoder, value.value)
-        }
+                is RawContent.ResourceLink -> encodeResourceLink(jsonEncoder, value.value)
+            }
         jsonEncoder.encodeJsonElement(encoded)
     }
 
     override fun deserialize(decoder: Decoder): RawContent {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("RawContent can only be decoded as JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("RawContent can only be decoded as JSON")
         val obj = jsonDecoder.decodeJsonElement().jsonObject
-        val type = obj["type"]?.jsonPrimitive?.content
-            ?: throw SerializationException("missing content type")
+        val type =
+            obj["type"]?.jsonPrimitive?.content
+                ?: throw SerializationException("missing content type")
         return when (type) {
             "resource_link" -> RawContent.ResourceLink(decodeResourceLink(obj))
             "text" -> RawContent.Text(RawTextContent(text = obj["text"]?.jsonPrimitive?.content.orEmpty()))
-            "image" -> RawContent.Image(
-                RawImageContent(
-                    data = obj["data"]?.jsonPrimitive?.content.orEmpty(),
-                    mimeType = obj["mimeType"]?.jsonPrimitive?.content.orEmpty(),
-                ),
-            )
-            "audio" -> RawContent.Audio(
-                RawAudioContent(
-                    data = obj["data"]?.jsonPrimitive?.content.orEmpty(),
-                    mimeType = obj["mimeType"]?.jsonPrimitive?.content.orEmpty(),
-                ),
-            )
+            "image" ->
+                RawContent.Image(
+                    RawImageContent(
+                        data = obj["data"]?.jsonPrimitive?.content.orEmpty(),
+                        mimeType = obj["mimeType"]?.jsonPrimitive?.content.orEmpty(),
+                    ),
+                )
+            "audio" ->
+                RawContent.Audio(
+                    RawAudioContent(
+                        data = obj["data"]?.jsonPrimitive?.content.orEmpty(),
+                        mimeType = obj["mimeType"]?.jsonPrimitive?.content.orEmpty(),
+                    ),
+                )
             else -> throw SerializationException("unknown content type $type")
         }
     }
