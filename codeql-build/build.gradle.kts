@@ -43,11 +43,13 @@ val defaultCodeqlSourceClasspath =
     ).joinToString(",")
 
 val codeqlKotlinc by configurations.creating
+val codeqlCompilerPlugins by configurations.creating
 val codeqlSourceClasspath by configurations.creating
 val codeqlAndroidAar by configurations.creating
 
 dependencies {
     add("codeqlKotlinc", "org.jetbrains.kotlin:kotlin-compiler-embeddable:$codeqlKotlinVersion")
+    add("codeqlCompilerPlugins", "org.jetbrains.kotlin:kotlin-serialization-compiler-plugin-embeddable:$codeqlKotlinVersion")
 
     propertyValue("project.dependencies.codeqlSourceClasspath", defaultCodeqlSourceClasspath)
         .splitToSequence(",")
@@ -118,6 +120,7 @@ fun registerCodeqlCompileTask(
         inputs.files(commonSources).withPathSensitivity(PathSensitivity.RELATIVE)
         inputs.files(codeqlSourceClasspath).withNormalizer(ClasspathNormalizer::class.java)
         inputs.files(codeqlAndroidAar).withNormalizer(ClasspathNormalizer::class.java)
+        inputs.files(codeqlCompilerPlugins).withNormalizer(ClasspathNormalizer::class.java)
         outputs.dir(outDir)
         outputs.dir(aarExtractDir)
 
@@ -195,7 +198,10 @@ fun registerCodeqlCompileTask(
                     "-Xmulti-platform",
                     "-Xcommon-sources=${commonSourceFiles.joinToString(",") { it.absolutePath }}",
                     "-Xexpect-actual-classes",
-                ) + commonOptIns.flatMap { listOf("-opt-in", it) } + sourceFiles.map { it.absolutePath }
+                ) +
+                commonOptIns.flatMap { listOf("-opt-in", it) } +
+                codeqlCompilerPlugins.files.map { "-Xplugin=${it.absolutePath}" } +
+                sourceFiles.map { it.absolutePath }
         }
     }
 }
