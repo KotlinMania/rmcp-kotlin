@@ -13,18 +13,20 @@ import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-private val promptTestJson = Json {
-    explicitNulls = false
-}
+private val promptTestJson =
+    Json {
+        explicitNulls = false
+    }
 
 class PromptTest {
     @Test
     fun testPromptMessageImageSerialization() {
-        val imageContent = RawImageContent(
-            data = "base64data",
-            mimeType = "image/png",
-            meta = null,
-        )
+        val imageContent =
+            RawImageContent(
+                data = "base64data",
+                mimeType = "image/png",
+                meta = null,
+            )
 
         val json = promptTestJson.encodeToString(imageContent)
         println("PromptMessage ImageContent JSON: $json")
@@ -50,7 +52,8 @@ class PromptTest {
 
     @Test
     fun testPromptMessageContentResourceLinkDeserialization() {
-        val json = """
+        val json =
+            """
             {
                 "type": "resource_link",
                 "uri": "file:///example.txt",
@@ -58,7 +61,7 @@ class PromptTest {
                 "description": "Example file",
                 "mimeType": "text/plain"
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val content = promptTestJson.decodeFromString<PromptMessageContent>(json)
 

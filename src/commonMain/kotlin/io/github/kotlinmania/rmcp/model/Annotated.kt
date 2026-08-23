@@ -51,20 +51,23 @@ data class Annotated<T : AnnotateAble>(
 
     fun withAudience(audience: List<Role>): Annotated<T> =
         copy(
-            annotations = annotations?.copy(audience = audience)
-                ?: Annotations(audience = audience),
+            annotations =
+                annotations?.copy(audience = audience)
+                    ?: Annotations(audience = audience),
         )
 
     fun withPriority(priority: Float): Annotated<T> =
         copy(
-            annotations = annotations?.copy(priority = priority)
-                ?: Annotations(priority = priority),
+            annotations =
+                annotations?.copy(priority = priority)
+                    ?: Annotations(priority = priority),
         )
 
     fun withTimestamp(timestamp: Instant): Annotated<T> =
         copy(
-            annotations = annotations?.copy(lastModified = timestamp)
-                ?: Annotations(lastModified = timestamp),
+            annotations =
+                annotations?.copy(lastModified = timestamp)
+                    ?: Annotations(lastModified = timestamp),
         )
 
     fun withTimestampNow(): Annotated<T> =

@@ -60,31 +60,41 @@ sealed class PrimitiveSchema {
      * Enum property, explicit enum schema.
      */
     @Serializable
-    data class Enum(val value: EnumSchema) : PrimitiveSchema()
+    data class Enum(
+        val value: EnumSchema,
+    ) : PrimitiveSchema()
 
     /**
      * String property, with optional enum constraint.
      */
     @Serializable
-    data class String(val value: StringSchema) : PrimitiveSchema()
+    data class String(
+        val value: StringSchema,
+    ) : PrimitiveSchema()
 
     /**
      * Number property, with optional enum constraint.
      */
     @Serializable
-    data class Number(val value: NumberSchema) : PrimitiveSchema()
+    data class Number(
+        val value: NumberSchema,
+    ) : PrimitiveSchema()
 
     /**
      * Integer property, with optional enum constraint.
      */
     @Serializable
-    data class Integer(val value: IntegerSchema) : PrimitiveSchema()
+    data class Integer(
+        val value: IntegerSchema,
+    ) : PrimitiveSchema()
 
     /**
      * Boolean property.
      */
     @Serializable
-    data class Boolean(val value: BooleanSchema) : PrimitiveSchema()
+    data class Boolean(
+        val value: BooleanSchema,
+    ) : PrimitiveSchema()
 }
 
 /**
@@ -129,29 +139,24 @@ data class StringSchema(
      */
     @SerialName("type")
     val type: kotlin.String = StringTypeConst.value,
-
     /**
      * Optional title for the schema.
      */
     val title: kotlin.String? = null,
-
     /**
      * Human-readable description.
      */
     val description: kotlin.String? = null,
-
     /**
      * Minimum string length.
      */
     @SerialName("minLength")
     val minLength: UInt? = null,
-
     /**
      * Maximum string length.
      */
     @SerialName("maxLength")
     val maxLength: UInt? = null,
-
     /**
      * String format, limited to email, URI, date, and date-time.
      */
@@ -256,22 +261,18 @@ data class NumberSchema(
      */
     @SerialName("type")
     val type: kotlin.String = NumberTypeConst.value,
-
     /**
      * Optional title for the schema.
      */
     val title: kotlin.String? = null,
-
     /**
      * Human-readable description.
      */
     val description: kotlin.String? = null,
-
     /**
      * Minimum value, inclusive.
      */
     val minimum: Double? = null,
-
     /**
      * Maximum value, inclusive.
      */
@@ -340,22 +341,18 @@ data class IntegerSchema(
      */
     @SerialName("type")
     val type: kotlin.String = IntegerTypeConst.value,
-
     /**
      * Optional title for the schema.
      */
     val title: kotlin.String? = null,
-
     /**
      * Human-readable description.
      */
     val description: kotlin.String? = null,
-
     /**
      * Minimum value, inclusive.
      */
     val minimum: Long? = null,
-
     /**
      * Maximum value, inclusive.
      */
@@ -422,17 +419,14 @@ data class BooleanSchema(
      */
     @SerialName("type")
     val type: kotlin.String = BooleanTypeConst.value,
-
     /**
      * Optional title for the schema.
      */
     val title: kotlin.String? = null,
-
     /**
      * Human-readable description.
      */
     val description: kotlin.String? = null,
-
     /**
      * Default value.
      */
@@ -524,10 +518,14 @@ data class TitledSingleSelectEnumSchema(
 @Serializable
 sealed class SingleSelectEnumSchema {
     @Serializable
-    data class Untitled(val value: UntitledSingleSelectEnumSchema) : SingleSelectEnumSchema()
+    data class Untitled(
+        val value: UntitledSingleSelectEnumSchema,
+    ) : SingleSelectEnumSchema()
 
     @Serializable
-    data class Titled(val value: TitledSingleSelectEnumSchema) : SingleSelectEnumSchema()
+    data class Titled(
+        val value: TitledSingleSelectEnumSchema,
+    ) : SingleSelectEnumSchema()
 }
 
 /**
@@ -590,10 +588,14 @@ data class TitledMultiSelectEnumSchema(
 @Serializable
 sealed class MultiSelectEnumSchema {
     @Serializable
-    data class Untitled(val value: UntitledMultiSelectEnumSchema) : MultiSelectEnumSchema()
+    data class Untitled(
+        val value: UntitledMultiSelectEnumSchema,
+    ) : MultiSelectEnumSchema()
 
     @Serializable
-    data class Titled(val value: TitledMultiSelectEnumSchema) : MultiSelectEnumSchema()
+    data class Titled(
+        val value: TitledMultiSelectEnumSchema,
+    ) : MultiSelectEnumSchema()
 }
 
 /**
@@ -604,13 +606,19 @@ sealed class MultiSelectEnumSchema {
 @Serializable
 sealed class EnumSchema {
     @Serializable
-    data class Single(val value: SingleSelectEnumSchema) : EnumSchema()
+    data class Single(
+        val value: SingleSelectEnumSchema,
+    ) : EnumSchema()
 
     @Serializable
-    data class Multi(val value: MultiSelectEnumSchema) : EnumSchema()
+    data class Multi(
+        val value: MultiSelectEnumSchema,
+    ) : EnumSchema()
 
     @Serializable
-    data class Legacy(val value: LegacyEnumSchema) : EnumSchema()
+    data class Legacy(
+        val value: LegacyEnumSchema,
+    ) : EnumSchema()
 
     companion object {
         /**
@@ -785,9 +793,10 @@ data class EnumSchemaBuilder(
                     TitledSingleSelectEnumSchema(
                         title = title,
                         description = description,
-                        oneOf = enumTitles.zip(enumValues).map { (title, constValue) ->
-                            ConstTitle(constValue = constValue, title = title)
-                        },
+                        oneOf =
+                            enumTitles.zip(enumValues).map { (title, constValue) ->
+                                ConstTitle(constValue = constValue, title = title)
+                            },
                         default = default.firstOrNull(),
                     ),
                 ),
@@ -814,11 +823,13 @@ data class EnumSchemaBuilder(
                         description = description,
                         minItems = minItems,
                         maxItems = maxItems,
-                        items = TitledItems(
-                            anyOf = enumTitles.zip(enumValues).map { (title, constValue) ->
-                                ConstTitle(constValue = constValue, title = title)
-                            },
-                        ),
+                        items =
+                            TitledItems(
+                                anyOf =
+                                    enumTitles.zip(enumValues).map { (title, constValue) ->
+                                        ConstTitle(constValue = constValue, title = title)
+                                    },
+                            ),
                         default = default.ifEmpty { null },
                     ),
                 ),
@@ -866,22 +877,18 @@ data class ElicitationSchema(
      */
     @SerialName("type")
     val type: kotlin.String = ObjectTypeConst.value,
-
     /**
      * Optional title for the schema.
      */
     val title: kotlin.String? = null,
-
     /**
      * Property definitions, which must be primitive types.
      */
     val properties: Map<kotlin.String, PrimitiveSchema>,
-
     /**
      * List of required property names.
      */
     val required: List<kotlin.String>? = null,
-
     /**
      * Optional description of what this schema represents.
      */
@@ -1251,7 +1258,8 @@ data class ElicitationSchemaBuilder(
     }
 }
 
-private val schemaJson = Json {
-    ignoreUnknownKeys = true
-    explicitNulls = false
-}
+private val schemaJson =
+    Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }

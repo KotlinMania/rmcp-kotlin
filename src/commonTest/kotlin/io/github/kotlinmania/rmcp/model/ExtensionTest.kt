@@ -8,7 +8,9 @@ import kotlin.test.assertNull
 class ExtensionTest {
     @Test
     fun testExtensions() {
-        data class MyType(val value: Int)
+        data class MyType(
+            val value: Int,
+        )
 
         val extensions = Extensions.new()
 

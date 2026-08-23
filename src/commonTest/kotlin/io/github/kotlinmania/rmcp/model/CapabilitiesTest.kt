@@ -13,41 +13,45 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import kotlin.test.assertFalse
 
-private val capabilitiesTestJson = Json {
-    explicitNulls = false
-}
+private val capabilitiesTestJson =
+    Json {
+        explicitNulls = false
+    }
 
 class CapabilitiesTest {
     @Test
     fun testBuilder() {
-        val builder = ServerCapabilitiesBuilder()
-            .enableLogging()
-            .enableExperimental()
-            .enablePrompts()
-            .enableResources()
-            .enableTools()
-            .enableToolListChanged()
+        val builder =
+            ServerCapabilitiesBuilder()
+                .enableLogging()
+                .enableExperimental()
+                .enablePrompts()
+                .enableResources()
+                .enableTools()
+                .enableToolListChanged()
         assertEquals(emptyJsonObject(), builder.logging)
         assertEquals(PromptsCapability(), builder.prompts)
         assertEquals(ResourcesCapability(), builder.resources)
         assertEquals(ToolsCapability(listChanged = true), builder.tools)
         assertEquals(mutableMapOf(), builder.experimental)
-        val clientBuilder = ClientCapabilitiesBuilder()
-            .enableExperimental()
-            .enableRoots()
-            .enableRootsListChanged()
-            .enableSampling()
+        val clientBuilder =
+            ClientCapabilitiesBuilder()
+                .enableExperimental()
+                .enableRoots()
+                .enableRootsListChanged()
+                .enableSampling()
         assertEquals(mutableMapOf(), clientBuilder.experimental)
         assertEquals(RootsCapabilities(listChanged = true), clientBuilder.roots)
     }
 
     @Test
     fun testTaskCapabilitiesDeserialization() {
-        val json = """
+        val json =
+            """
             {
                 "list": {},
                 "cancel": {},
@@ -55,7 +59,7 @@ class CapabilitiesTest {
                     "tools": { "call": {} }
                 }
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val tasks = capabilitiesTestJson.decodeFromString<TasksCapability>(json)
         assertNotNull(tasks.list)
@@ -105,14 +109,17 @@ class CapabilitiesTest {
     @Test
     fun testClientExtensionsCapability() {
         val extensions = mutableMapOf<String, JsonObject>()
-        extensions["io.modelcontextprotocol/ui"] = buildJsonObject {
-            put("mimeTypes", JsonArray(listOf(JsonPrimitive("text/html;profile=mcp-app"))))
-        }
+        extensions["io.modelcontextprotocol/ui"] =
+            buildJsonObject {
+                put("mimeTypes", JsonArray(listOf(JsonPrimitive("text/html;profile=mcp-app"))))
+            }
 
-        val capabilities = ClientCapabilities.builder()
-            .enableExtensionsWith(extensions)
-            .enableSampling()
-            .build()
+        val capabilities =
+            ClientCapabilities
+                .builder()
+                .enableExtensionsWith(extensions)
+                .enableSampling()
+                .build()
 
         // Verify serialization matches MCP Apps spec format
         val json = capabilitiesTestJson.parseToJsonElement(capabilitiesTestJson.encodeToString(capabilities)).jsonObject
@@ -128,10 +135,12 @@ class CapabilitiesTest {
         val extensions = mutableMapOf<String, JsonObject>()
         extensions["io.modelcontextprotocol/apps"] = emptyJsonObject()
 
-        val capabilities = ServerCapabilities.builder()
-            .enableExtensionsWith(extensions)
-            .enableTools()
-            .build()
+        val capabilities =
+            ServerCapabilities
+                .builder()
+                .enableExtensionsWith(extensions)
+                .enableTools()
+                .build()
 
         // Verify serialization
         val json = capabilitiesTestJson.parseToJsonElement(capabilitiesTestJson.encodeToString(capabilities)).jsonObject
@@ -141,7 +150,8 @@ class CapabilitiesTest {
 
     @Test
     fun testExtensionsDeserialization() {
-        val json = """
+        val json =
+            """
             {
                 "extensions": {
                     "io.modelcontextprotocol/ui": {
@@ -150,7 +160,7 @@ class CapabilitiesTest {
                 },
                 "sampling": {}
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val capabilities = capabilitiesTestJson.decodeFromString<ClientCapabilities>(json)
         val extensions = assertNotNull(capabilities.extensions)
@@ -164,9 +174,11 @@ class CapabilitiesTest {
         val extensions = mutableMapOf<String, JsonObject>()
         extensions["io.modelcontextprotocol/oauth-client-credentials"] = emptyJsonObject()
 
-        val capabilities = ClientCapabilities.builder()
-            .enableExtensionsWith(extensions)
-            .build()
+        val capabilities =
+            ClientCapabilities
+                .builder()
+                .enableExtensionsWith(extensions)
+                .build()
 
         val json = capabilitiesTestJson.parseToJsonElement(capabilitiesTestJson.encodeToString(capabilities)).jsonObject
         assertEquals(

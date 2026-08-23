@@ -85,28 +85,33 @@ data class TasksCapability(
             TasksCapability(
                 list = emptyJsonObject(),
                 cancel = emptyJsonObject(),
-                requests = TaskRequestsCapability(
-                    sampling = SamplingTaskCapability(
-                        createMessage = emptyJsonObject(),
+                requests =
+                    TaskRequestsCapability(
+                        sampling =
+                            SamplingTaskCapability(
+                                createMessage = emptyJsonObject(),
+                            ),
+                        elicitation =
+                            ElicitationTaskCapability(
+                                create = emptyJsonObject(),
+                            ),
+                        tools = null,
                     ),
-                    elicitation = ElicitationTaskCapability(
-                        create = emptyJsonObject(),
-                    ),
-                    tools = null,
-                ),
             )
 
         fun serverDefault(): TasksCapability =
             TasksCapability(
                 list = emptyJsonObject(),
                 cancel = emptyJsonObject(),
-                requests = TaskRequestsCapability(
-                    sampling = null,
-                    elicitation = null,
-                    tools = ToolsTaskCapability(
-                        call = emptyJsonObject(),
+                requests =
+                    TaskRequestsCapability(
+                        sampling = null,
+                        elicitation = null,
+                        tools =
+                            ToolsTaskCapability(
+                                call = emptyJsonObject(),
+                            ),
                     ),
-                ),
             )
     }
 }
@@ -411,11 +416,13 @@ class ClientCapabilitiesBuilder(
      */
     fun enableElicitationSchemaValidation(): ClientCapabilitiesBuilder =
         apply {
-            elicitation = elicitation?.copy(
-                form = FormElicitationCapability(
-                    schemaValidation = true,
-                ),
-            )
+            elicitation =
+                elicitation?.copy(
+                    form =
+                        FormElicitationCapability(
+                            schemaValidation = true,
+                        ),
+                )
         }
 }
 

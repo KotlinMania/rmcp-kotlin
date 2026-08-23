@@ -9,15 +9,16 @@ class ToolNameValidationTest {
     @Test
     fun testValidToolNames() {
         val maxLengthName = "a".repeat(128)
-        val validNames = listOf(
-            "my_tool",
-            "MyTool",
-            "my-tool",
-            "my.tool",
-            "tool123",
-            "a",
-            maxLengthName,
-        )
+        val validNames =
+            listOf(
+                "my_tool",
+                "MyTool",
+                "my-tool",
+                "my.tool",
+                "tool123",
+                "a",
+                maxLengthName,
+            )
 
         for (name in validNames) {
             val result = validateToolName(name)

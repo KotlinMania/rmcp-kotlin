@@ -18,12 +18,11 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject as KotlinxJsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.longOrNull
+import kotlinx.serialization.json.JsonObject as KotlinxJsonObject
 
 /**
  * A JSON object type alias for convenient handling of JSON data.
@@ -104,12 +103,16 @@ sealed class NumberOrString {
     /**
      * A numeric identifier.
      */
-    data class Number(val value: Long) : NumberOrString()
+    data class Number(
+        val value: Long,
+    ) : NumberOrString()
 
     /**
      * A string identifier.
      */
-    data class StringValue(val value: String) : NumberOrString()
+    data class StringValue(
+        val value: String,
+    ) : NumberOrString()
 
     fun intoJsonValue(): JsonElement =
         when (this) {
@@ -136,16 +139,19 @@ object NumberOrStringSerializer : KSerializer<NumberOrString> {
     }
 
     override fun deserialize(decoder: Decoder): NumberOrString {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("NumberOrString can only be decoded as JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("NumberOrString can only be decoded as JSON")
         val value = jsonDecoder.decodeJsonElement()
-        val primitive = value as? JsonPrimitive
-            ?: throw SerializationException("Expect number or string")
+        val primitive =
+            value as? JsonPrimitive
+                ?: throw SerializationException("Expect number or string")
         if (primitive.isString) {
             return NumberOrString.StringValue(primitive.content)
         }
-        val long = primitive.longOrNull
-            ?: throw SerializationException("Expected an integer")
+        val long =
+            primitive.longOrNull
+                ?: throw SerializationException("Expected an integer")
         return NumberOrString.Number(long)
     }
 }
@@ -312,12 +318,10 @@ data class ErrorData(
      * The error type that occurred, using standard JSON-RPC error codes.
      */
     val code: ErrorCode,
-
     /**
      * A short description of the error. The message should be limited to a concise single sentence.
      */
     val message: String,
-
     /**
      * Additional information about the error. The value of this member is defined by the sender.
      */
@@ -1014,18 +1018,25 @@ typealias ToolListChangedNotification = NotificationNoParam
 enum class LoggingLevel {
     @SerialName("debug")
     Debug,
+
     @SerialName("info")
     Info,
+
     @SerialName("notice")
     Notice,
+
     @SerialName("warning")
     Warning,
+
     @SerialName("error")
     Error,
+
     @SerialName("critical")
     Critical,
+
     @SerialName("alert")
     Alert,
+
     @SerialName("emergency")
     Emergency,
 }
@@ -1127,11 +1138,13 @@ enum class ToolChoiceMode {
      */
     @SerialName("auto")
     Auto,
+
     /**
      * Model must use at least one tool.
      */
     @SerialName("required")
     Required,
+
     /**
      * Model must not use tools.
      */
@@ -1164,10 +1177,14 @@ data class ToolChoice(
 @Serializable
 sealed class SamplingContent<T> {
     @Serializable
-    data class Single<T>(val item: T) : SamplingContent<T>()
+    data class Single<T>(
+        val item: T,
+    ) : SamplingContent<T>()
 
     @Serializable
-    data class Multiple<T>(val items: List<T>) : SamplingContent<T>()
+    data class Multiple<T>(
+        val items: List<T>,
+    ) : SamplingContent<T>()
 
     /**
      * Convert to a list regardless of whether it is single or multiple.
@@ -1266,25 +1283,35 @@ data class SamplingMessage(
 @Serializable
 sealed class SamplingMessageContent {
     @Serializable
-    data class Text(val text: RawTextContent) : SamplingMessageContent()
+    data class Text(
+        val text: RawTextContent,
+    ) : SamplingMessageContent()
 
     @Serializable
-    data class Image(val image: RawImageContent) : SamplingMessageContent()
+    data class Image(
+        val image: RawImageContent,
+    ) : SamplingMessageContent()
 
     @Serializable
-    data class Audio(val audio: RawAudioContent) : SamplingMessageContent()
+    data class Audio(
+        val audio: RawAudioContent,
+    ) : SamplingMessageContent()
 
     /**
      * Assistant only.
      */
     @Serializable
-    data class ToolUse(val toolUse: ToolUseContent) : SamplingMessageContent()
+    data class ToolUse(
+        val toolUse: ToolUseContent,
+    ) : SamplingMessageContent()
 
     /**
      * User only.
      */
     @Serializable
-    data class ToolResult(val toolResult: ToolResultContent) : SamplingMessageContent()
+    data class ToolResult(
+        val toolResult: ToolResultContent,
+    ) : SamplingMessageContent()
 
     fun asText(): RawTextContent? =
         when (this) {
@@ -1325,12 +1352,14 @@ sealed class SamplingMessageContent {
                 is RawContent.Text -> Result.success(Text(raw.value))
                 is RawContent.Image -> Result.success(Image(raw.value))
                 is RawContent.Audio -> Result.success(Audio(raw.value))
-                is RawContent.Resource -> Result.failure(
-                    IllegalArgumentException("Resource content is not supported in sampling messages"),
-                )
-                is RawContent.ResourceLink -> Result.failure(
-                    IllegalArgumentException("ResourceLink content is not supported in sampling messages"),
-                )
+                is RawContent.Resource ->
+                    Result.failure(
+                        IllegalArgumentException("Resource content is not supported in sampling messages"),
+                    )
+                is RawContent.ResourceLink ->
+                    Result.failure(
+                        IllegalArgumentException("ResourceLink content is not supported in sampling messages"),
+                    )
             }
     }
 }
@@ -1345,11 +1374,13 @@ enum class ContextInclusion {
      */
     @SerialName("allServers")
     AllServers,
+
     /**
      * Include no additional context.
      */
     @SerialName("none")
     None,
+
     /**
      * Include context only from the requesting server.
      */
@@ -1675,10 +1706,14 @@ data class CompleteResult(
 @Serializable
 sealed class Reference {
     @Serializable
-    data class Resource(val value: ResourceReference) : Reference()
+    data class Resource(
+        val value: ResourceReference,
+    ) : Reference()
 
     @Serializable
-    data class Prompt(val value: PromptReference) : Reference()
+    data class Prompt(
+        val value: PromptReference,
+    ) : Reference()
 
     /**
      * Get the reference type as a string.
@@ -1788,11 +1823,13 @@ enum class ElicitationAction {
      */
     @SerialName("accept")
     Accept,
+
     /**
      * User declines to provide the information but allows the operation to continue.
      */
     @SerialName("decline")
     Decline,
+
     /**
      * User cancels the entire operation.
      */
@@ -1931,7 +1968,12 @@ data class CallToolResult(
         structuredContent?.let { value ->
             return runCatching { json.decodeFromJsonElement<T>(value) }
         }
-        val rawText = content.firstOrNull()?.raw?.asText()?.text
+        val rawText =
+            content
+                .firstOrNull()
+                ?.raw
+                ?.asText()
+                ?.text
         if (rawText != null) {
             return runCatching { json.decodeFromString<T>(rawText) }
         }
@@ -2194,24 +2236,77 @@ data class ListTasksResult(
 
 @Serializable
 sealed class ClientRequest {
-    @Serializable data class PingRequest(val value: io.github.kotlinmania.rmcp.model.PingRequest) : ClientRequest()
-    @Serializable data class InitializeRequest(val value: io.github.kotlinmania.rmcp.model.InitializeRequest) : ClientRequest()
-    @Serializable data class CompleteRequest(val value: io.github.kotlinmania.rmcp.model.CompleteRequest) : ClientRequest()
-    @Serializable data class SetLevelRequest(val value: io.github.kotlinmania.rmcp.model.SetLevelRequest) : ClientRequest()
-    @Serializable data class GetPromptRequest(val value: io.github.kotlinmania.rmcp.model.GetPromptRequest) : ClientRequest()
-    @Serializable data class ListPromptsRequest(val value: io.github.kotlinmania.rmcp.model.ListPromptsRequest) : ClientRequest()
-    @Serializable data class ListResourcesRequest(val value: io.github.kotlinmania.rmcp.model.ListResourcesRequest) : ClientRequest()
-    @Serializable data class ListResourceTemplatesRequest(val value: io.github.kotlinmania.rmcp.model.ListResourceTemplatesRequest) : ClientRequest()
-    @Serializable data class ReadResourceRequest(val value: io.github.kotlinmania.rmcp.model.ReadResourceRequest) : ClientRequest()
-    @Serializable data class SubscribeRequest(val value: io.github.kotlinmania.rmcp.model.SubscribeRequest) : ClientRequest()
-    @Serializable data class UnsubscribeRequest(val value: io.github.kotlinmania.rmcp.model.UnsubscribeRequest) : ClientRequest()
-    @Serializable data class CallToolRequest(val value: io.github.kotlinmania.rmcp.model.CallToolRequest) : ClientRequest()
-    @Serializable data class ListToolsRequest(val value: io.github.kotlinmania.rmcp.model.ListToolsRequest) : ClientRequest()
-    @Serializable data class GetTaskInfoRequest(val value: io.github.kotlinmania.rmcp.model.GetTaskInfoRequest) : ClientRequest()
-    @Serializable data class ListTasksRequest(val value: io.github.kotlinmania.rmcp.model.ListTasksRequest) : ClientRequest()
-    @Serializable data class GetTaskResultRequest(val value: io.github.kotlinmania.rmcp.model.GetTaskResultRequest) : ClientRequest()
-    @Serializable data class CancelTaskRequest(val value: io.github.kotlinmania.rmcp.model.CancelTaskRequest) : ClientRequest()
-    @Serializable data class CustomRequest(val value: io.github.kotlinmania.rmcp.model.CustomRequest) : ClientRequest()
+    @Serializable data class PingRequest(
+        val value: io.github.kotlinmania.rmcp.model.PingRequest,
+    ) : ClientRequest()
+
+    @Serializable data class InitializeRequest(
+        val value: io.github.kotlinmania.rmcp.model.InitializeRequest,
+    ) : ClientRequest()
+
+    @Serializable data class CompleteRequest(
+        val value: io.github.kotlinmania.rmcp.model.CompleteRequest,
+    ) : ClientRequest()
+
+    @Serializable data class SetLevelRequest(
+        val value: io.github.kotlinmania.rmcp.model.SetLevelRequest,
+    ) : ClientRequest()
+
+    @Serializable data class GetPromptRequest(
+        val value: io.github.kotlinmania.rmcp.model.GetPromptRequest,
+    ) : ClientRequest()
+
+    @Serializable data class ListPromptsRequest(
+        val value: io.github.kotlinmania.rmcp.model.ListPromptsRequest,
+    ) : ClientRequest()
+
+    @Serializable data class ListResourcesRequest(
+        val value: io.github.kotlinmania.rmcp.model.ListResourcesRequest,
+    ) : ClientRequest()
+
+    @Serializable data class ListResourceTemplatesRequest(
+        val value: io.github.kotlinmania.rmcp.model.ListResourceTemplatesRequest,
+    ) : ClientRequest()
+
+    @Serializable data class ReadResourceRequest(
+        val value: io.github.kotlinmania.rmcp.model.ReadResourceRequest,
+    ) : ClientRequest()
+
+    @Serializable data class SubscribeRequest(
+        val value: io.github.kotlinmania.rmcp.model.SubscribeRequest,
+    ) : ClientRequest()
+
+    @Serializable data class UnsubscribeRequest(
+        val value: io.github.kotlinmania.rmcp.model.UnsubscribeRequest,
+    ) : ClientRequest()
+
+    @Serializable data class CallToolRequest(
+        val value: io.github.kotlinmania.rmcp.model.CallToolRequest,
+    ) : ClientRequest()
+
+    @Serializable data class ListToolsRequest(
+        val value: io.github.kotlinmania.rmcp.model.ListToolsRequest,
+    ) : ClientRequest()
+
+    @Serializable data class GetTaskInfoRequest(
+        val value: io.github.kotlinmania.rmcp.model.GetTaskInfoRequest,
+    ) : ClientRequest()
+
+    @Serializable data class ListTasksRequest(
+        val value: io.github.kotlinmania.rmcp.model.ListTasksRequest,
+    ) : ClientRequest()
+
+    @Serializable data class GetTaskResultRequest(
+        val value: io.github.kotlinmania.rmcp.model.GetTaskResultRequest,
+    ) : ClientRequest()
+
+    @Serializable data class CancelTaskRequest(
+        val value: io.github.kotlinmania.rmcp.model.CancelTaskRequest,
+    ) : ClientRequest()
+
+    @Serializable data class CustomRequest(
+        val value: io.github.kotlinmania.rmcp.model.CustomRequest,
+    ) : ClientRequest()
 
     fun method(): String =
         when (this) {
@@ -2238,20 +2333,48 @@ sealed class ClientRequest {
 
 @Serializable
 sealed class ClientNotification {
-    @Serializable data class CancelledNotification(val value: io.github.kotlinmania.rmcp.model.CancelledNotification) : ClientNotification()
-    @Serializable data class ProgressNotification(val value: io.github.kotlinmania.rmcp.model.ProgressNotification) : ClientNotification()
-    @Serializable data class InitializedNotification(val value: io.github.kotlinmania.rmcp.model.InitializedNotification) : ClientNotification()
-    @Serializable data class RootsListChangedNotification(val value: io.github.kotlinmania.rmcp.model.RootsListChangedNotification) : ClientNotification()
-    @Serializable data class CustomNotification(val value: io.github.kotlinmania.rmcp.model.CustomNotification) : ClientNotification()
+    @Serializable data class CancelledNotification(
+        val value: io.github.kotlinmania.rmcp.model.CancelledNotification,
+    ) : ClientNotification()
+
+    @Serializable data class ProgressNotification(
+        val value: io.github.kotlinmania.rmcp.model.ProgressNotification,
+    ) : ClientNotification()
+
+    @Serializable data class InitializedNotification(
+        val value: io.github.kotlinmania.rmcp.model.InitializedNotification,
+    ) : ClientNotification()
+
+    @Serializable data class RootsListChangedNotification(
+        val value: io.github.kotlinmania.rmcp.model.RootsListChangedNotification,
+    ) : ClientNotification()
+
+    @Serializable data class CustomNotification(
+        val value: io.github.kotlinmania.rmcp.model.CustomNotification,
+    ) : ClientNotification()
 }
 
 @Serializable
 sealed class ClientResult {
-    @Serializable data class CreateMessageResult(val value: io.github.kotlinmania.rmcp.model.CreateMessageResult) : ClientResult()
-    @Serializable data class ListRootsResult(val value: io.github.kotlinmania.rmcp.model.ListRootsResult) : ClientResult()
-    @Serializable data class CreateElicitationResult(val value: io.github.kotlinmania.rmcp.model.CreateElicitationResult) : ClientResult()
-    @Serializable data class EmptyResult(val value: io.github.kotlinmania.rmcp.model.EmptyResult) : ClientResult()
-    @Serializable data class CustomResult(val value: io.github.kotlinmania.rmcp.model.CustomResult) : ClientResult()
+    @Serializable data class CreateMessageResult(
+        val value: io.github.kotlinmania.rmcp.model.CreateMessageResult,
+    ) : ClientResult()
+
+    @Serializable data class ListRootsResult(
+        val value: io.github.kotlinmania.rmcp.model.ListRootsResult,
+    ) : ClientResult()
+
+    @Serializable data class CreateElicitationResult(
+        val value: io.github.kotlinmania.rmcp.model.CreateElicitationResult,
+    ) : ClientResult()
+
+    @Serializable data class EmptyResult(
+        val value: io.github.kotlinmania.rmcp.model.EmptyResult,
+    ) : ClientResult()
+
+    @Serializable data class CustomResult(
+        val value: io.github.kotlinmania.rmcp.model.CustomResult,
+    ) : ClientResult()
 
     companion object {
         fun empty(unit: Unit): ClientResult =
@@ -2263,44 +2386,131 @@ typealias ClientJsonRpcMessage = JsonRpcMessage<ClientRequest, ClientResult, Cli
 
 @Serializable
 sealed class ServerRequest {
-    @Serializable data class PingRequest(val value: io.github.kotlinmania.rmcp.model.PingRequest) : ServerRequest()
-    @Serializable data class CreateMessageRequest(val value: io.github.kotlinmania.rmcp.model.CreateMessageRequest) : ServerRequest()
-    @Serializable data class ListRootsRequest(val value: io.github.kotlinmania.rmcp.model.ListRootsRequest) : ServerRequest()
-    @Serializable data class CreateElicitationRequest(val value: io.github.kotlinmania.rmcp.model.CreateElicitationRequest) : ServerRequest()
-    @Serializable data class CustomRequest(val value: io.github.kotlinmania.rmcp.model.CustomRequest) : ServerRequest()
+    @Serializable data class PingRequest(
+        val value: io.github.kotlinmania.rmcp.model.PingRequest,
+    ) : ServerRequest()
+
+    @Serializable data class CreateMessageRequest(
+        val value: io.github.kotlinmania.rmcp.model.CreateMessageRequest,
+    ) : ServerRequest()
+
+    @Serializable data class ListRootsRequest(
+        val value: io.github.kotlinmania.rmcp.model.ListRootsRequest,
+    ) : ServerRequest()
+
+    @Serializable data class CreateElicitationRequest(
+        val value: io.github.kotlinmania.rmcp.model.CreateElicitationRequest,
+    ) : ServerRequest()
+
+    @Serializable data class CustomRequest(
+        val value: io.github.kotlinmania.rmcp.model.CustomRequest,
+    ) : ServerRequest()
 }
 
 @Serializable
 sealed class ServerNotification {
-    @Serializable data class CancelledNotification(val value: io.github.kotlinmania.rmcp.model.CancelledNotification) : ServerNotification()
-    @Serializable data class ProgressNotification(val value: io.github.kotlinmania.rmcp.model.ProgressNotification) : ServerNotification()
-    @Serializable data class LoggingMessageNotification(val value: io.github.kotlinmania.rmcp.model.LoggingMessageNotification) : ServerNotification()
-    @Serializable data class ResourceUpdatedNotification(val value: io.github.kotlinmania.rmcp.model.ResourceUpdatedNotification) : ServerNotification()
-    @Serializable data class ResourceListChangedNotification(val value: io.github.kotlinmania.rmcp.model.ResourceListChangedNotification) : ServerNotification()
-    @Serializable data class ToolListChangedNotification(val value: io.github.kotlinmania.rmcp.model.ToolListChangedNotification) : ServerNotification()
-    @Serializable data class PromptListChangedNotification(val value: io.github.kotlinmania.rmcp.model.PromptListChangedNotification) : ServerNotification()
-    @Serializable data class ElicitationCompletionNotification(val value: io.github.kotlinmania.rmcp.model.ElicitationCompletionNotification) : ServerNotification()
-    @Serializable data class CustomNotification(val value: io.github.kotlinmania.rmcp.model.CustomNotification) : ServerNotification()
+    @Serializable data class CancelledNotification(
+        val value: io.github.kotlinmania.rmcp.model.CancelledNotification,
+    ) : ServerNotification()
+
+    @Serializable data class ProgressNotification(
+        val value: io.github.kotlinmania.rmcp.model.ProgressNotification,
+    ) : ServerNotification()
+
+    @Serializable data class LoggingMessageNotification(
+        val value: io.github.kotlinmania.rmcp.model.LoggingMessageNotification,
+    ) : ServerNotification()
+
+    @Serializable data class ResourceUpdatedNotification(
+        val value: io.github.kotlinmania.rmcp.model.ResourceUpdatedNotification,
+    ) : ServerNotification()
+
+    @Serializable data class ResourceListChangedNotification(
+        val value: io.github.kotlinmania.rmcp.model.ResourceListChangedNotification,
+    ) : ServerNotification()
+
+    @Serializable data class ToolListChangedNotification(
+        val value: io.github.kotlinmania.rmcp.model.ToolListChangedNotification,
+    ) : ServerNotification()
+
+    @Serializable data class PromptListChangedNotification(
+        val value: io.github.kotlinmania.rmcp.model.PromptListChangedNotification,
+    ) : ServerNotification()
+
+    @Serializable data class ElicitationCompletionNotification(
+        val value: io.github.kotlinmania.rmcp.model.ElicitationCompletionNotification,
+    ) : ServerNotification()
+
+    @Serializable data class CustomNotification(
+        val value: io.github.kotlinmania.rmcp.model.CustomNotification,
+    ) : ServerNotification()
 }
 
 @Serializable
 sealed class ServerResult {
-    @Serializable data class InitializeResult(val value: io.github.kotlinmania.rmcp.model.InitializeResult) : ServerResult()
-    @Serializable data class CompleteResult(val value: io.github.kotlinmania.rmcp.model.CompleteResult) : ServerResult()
-    @Serializable data class GetPromptResult(val value: io.github.kotlinmania.rmcp.model.GetPromptResult) : ServerResult()
-    @Serializable data class ListPromptsResult(val value: io.github.kotlinmania.rmcp.model.ListPromptsResult) : ServerResult()
-    @Serializable data class ListResourcesResult(val value: io.github.kotlinmania.rmcp.model.ListResourcesResult) : ServerResult()
-    @Serializable data class ListResourceTemplatesResult(val value: io.github.kotlinmania.rmcp.model.ListResourceTemplatesResult) : ServerResult()
-    @Serializable data class ReadResourceResult(val value: io.github.kotlinmania.rmcp.model.ReadResourceResult) : ServerResult()
-    @Serializable data class CallToolResult(val value: io.github.kotlinmania.rmcp.model.CallToolResult) : ServerResult()
-    @Serializable data class ListToolsResult(val value: io.github.kotlinmania.rmcp.model.ListToolsResult) : ServerResult()
-    @Serializable data class CreateElicitationResult(val value: io.github.kotlinmania.rmcp.model.CreateElicitationResult) : ServerResult()
-    @Serializable data class EmptyResult(val value: io.github.kotlinmania.rmcp.model.EmptyResult) : ServerResult()
-    @Serializable data class CreateTaskResult(val value: io.github.kotlinmania.rmcp.model.CreateTaskResult) : ServerResult()
-    @Serializable data class ListTasksResult(val value: io.github.kotlinmania.rmcp.model.ListTasksResult) : ServerResult()
-    @Serializable data class GetTaskInfoResult(val value: io.github.kotlinmania.rmcp.model.GetTaskInfoResult) : ServerResult()
-    @Serializable data class TaskResult(val value: io.github.kotlinmania.rmcp.model.TaskResult) : ServerResult()
-    @Serializable data class CustomResult(val value: io.github.kotlinmania.rmcp.model.CustomResult) : ServerResult()
+    @Serializable data class InitializeResult(
+        val value: io.github.kotlinmania.rmcp.model.InitializeResult,
+    ) : ServerResult()
+
+    @Serializable data class CompleteResult(
+        val value: io.github.kotlinmania.rmcp.model.CompleteResult,
+    ) : ServerResult()
+
+    @Serializable data class GetPromptResult(
+        val value: io.github.kotlinmania.rmcp.model.GetPromptResult,
+    ) : ServerResult()
+
+    @Serializable data class ListPromptsResult(
+        val value: io.github.kotlinmania.rmcp.model.ListPromptsResult,
+    ) : ServerResult()
+
+    @Serializable data class ListResourcesResult(
+        val value: io.github.kotlinmania.rmcp.model.ListResourcesResult,
+    ) : ServerResult()
+
+    @Serializable data class ListResourceTemplatesResult(
+        val value: io.github.kotlinmania.rmcp.model.ListResourceTemplatesResult,
+    ) : ServerResult()
+
+    @Serializable data class ReadResourceResult(
+        val value: io.github.kotlinmania.rmcp.model.ReadResourceResult,
+    ) : ServerResult()
+
+    @Serializable data class CallToolResult(
+        val value: io.github.kotlinmania.rmcp.model.CallToolResult,
+    ) : ServerResult()
+
+    @Serializable data class ListToolsResult(
+        val value: io.github.kotlinmania.rmcp.model.ListToolsResult,
+    ) : ServerResult()
+
+    @Serializable data class CreateElicitationResult(
+        val value: io.github.kotlinmania.rmcp.model.CreateElicitationResult,
+    ) : ServerResult()
+
+    @Serializable data class EmptyResult(
+        val value: io.github.kotlinmania.rmcp.model.EmptyResult,
+    ) : ServerResult()
+
+    @Serializable data class CreateTaskResult(
+        val value: io.github.kotlinmania.rmcp.model.CreateTaskResult,
+    ) : ServerResult()
+
+    @Serializable data class ListTasksResult(
+        val value: io.github.kotlinmania.rmcp.model.ListTasksResult,
+    ) : ServerResult()
+
+    @Serializable data class GetTaskInfoResult(
+        val value: io.github.kotlinmania.rmcp.model.GetTaskInfoResult,
+    ) : ServerResult()
+
+    @Serializable data class TaskResult(
+        val value: io.github.kotlinmania.rmcp.model.TaskResult,
+    ) : ServerResult()
+
+    @Serializable data class CustomResult(
+        val value: io.github.kotlinmania.rmcp.model.CustomResult,
+    ) : ServerResult()
 
     companion object {
         fun empty(unit: Unit): ServerResult =
@@ -2323,7 +2533,8 @@ fun ClientNotification.tryIntoCancelledNotification(): Result<CancelledNotificat
     }
 
 @PublishedApi
-internal val modelJson = Json {
-    ignoreUnknownKeys = true
-    explicitNulls = false
-}
+internal val modelJson =
+    Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }

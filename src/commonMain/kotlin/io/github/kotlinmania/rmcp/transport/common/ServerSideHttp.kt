@@ -29,12 +29,10 @@ data class ServerSseMessage(
      * the Last-Event-ID header to resume the stream from this point.
      */
     val eventId: String? = null,
-
     /**
      * The JSON-RPC message content. Set to null for priming events.
      */
     val message: JsonElement? = null,
-
     /**
      * The retry interval hint for clients. Clients should wait this duration
      * before attempting to reconnect.
@@ -50,24 +48,26 @@ fun sseStreamResponse(
     keepAlive: Duration?,
     cancelled: Boolean,
 ): SimpleHttpResponse {
-    val body = if (cancelled) {
-        ""
-    } else {
-        stream.joinToString(separator = "\n") { message ->
-            buildString {
-                message.eventId?.let { append("id: ").append(it).append('\n') }
-                message.retry?.let { append("retry: ").append(it.inWholeMilliseconds).append('\n') }
-                append("data: ")
-                append(message.message?.toString().orEmpty())
-                append('\n')
+    val body =
+        if (cancelled) {
+            ""
+        } else {
+            stream.joinToString(separator = "\n") { message ->
+                buildString {
+                    message.eventId?.let { append("id: ").append(it).append('\n') }
+                    message.retry?.let { append("retry: ").append(it.inWholeMilliseconds).append('\n') }
+                    append("data: ")
+                    append(message.message?.toString().orEmpty())
+                    append('\n')
+                }
             }
         }
-    }
-    val headers = buildMap {
-        put("Content-Type", EVENT_STREAM_MIME_TYPE)
-        put("Cache-Control", "no-cache")
-        keepAlive?.let { put("X-Keep-Alive-Millis", it.inWholeMilliseconds.toString()) }
-    }
+    val headers =
+        buildMap {
+            put("Content-Type", EVENT_STREAM_MIME_TYPE)
+            put("Cache-Control", "no-cache")
+            keepAlive?.let { put("X-Keep-Alive-Millis", it.inWholeMilliseconds.toString()) }
+        }
     return SimpleHttpResponse(status = 200, headers = headers, body = body)
 }
 
