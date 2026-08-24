@@ -39,7 +39,7 @@ class PromptTest {
     @Test
     fun testPromptMessageResourceLinkSerialization() {
         val resource = RawResource.new("file:///test.txt", "test.txt")
-        val message = PromptMessage.newResourceLink(PromptMessageRole.User, resource.noAnnotation())
+        val message = PromptMessage.newResourceLink(PromptMessageRole.User, Resource(raw = resource))
 
         val json = promptTestJson.encodeToString(message)
         println("PromptMessage with ResourceLink JSON: $json")
@@ -68,7 +68,7 @@ class PromptTest {
         val link = assertIs<PromptMessageContent.ResourceLink>(content).link.raw
         assertEquals("file:///example.txt", link.uri)
         assertEquals("example.txt", link.name)
-        assertEquals("Example file", link.description)
+        assertEquals("Example file", link.descriptionText)
         assertEquals("text/plain", link.mimeType)
     }
 }

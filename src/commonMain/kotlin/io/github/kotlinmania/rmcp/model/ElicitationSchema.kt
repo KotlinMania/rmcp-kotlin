@@ -60,7 +60,7 @@ sealed class PrimitiveSchema {
      * Enum property, explicit enum schema.
      */
     @Serializable
-    data class Enum(
+    data class EnumVariant(
         val value: EnumSchema,
     ) : PrimitiveSchema()
 
@@ -68,7 +68,7 @@ sealed class PrimitiveSchema {
      * String property, with optional enum constraint.
      */
     @Serializable
-    data class String(
+    data class StringVariant(
         val value: StringSchema,
     ) : PrimitiveSchema()
 
@@ -76,7 +76,7 @@ sealed class PrimitiveSchema {
      * Number property, with optional enum constraint.
      */
     @Serializable
-    data class Number(
+    data class NumberVariant(
         val value: NumberSchema,
     ) : PrimitiveSchema()
 
@@ -84,7 +84,7 @@ sealed class PrimitiveSchema {
      * Integer property, with optional enum constraint.
      */
     @Serializable
-    data class Integer(
+    data class IntegerVariant(
         val value: IntegerSchema,
     ) : PrimitiveSchema()
 
@@ -92,7 +92,7 @@ sealed class PrimitiveSchema {
      * Boolean property.
      */
     @Serializable
-    data class Boolean(
+    data class BooleanVariant(
         val value: BooleanSchema,
     ) : PrimitiveSchema()
 }
@@ -146,7 +146,8 @@ data class StringSchema(
     /**
      * Human-readable description.
      */
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     /**
      * Minimum string length.
      */
@@ -178,7 +179,7 @@ data class StringSchema(
      * Set description.
      */
     fun description(description: kotlin.String): StringSchema =
-        copy(description = description)
+        copy(descriptionText = description)
 
     /**
      * Set minimum and maximum length.
@@ -268,7 +269,8 @@ data class NumberSchema(
     /**
      * Human-readable description.
      */
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     /**
      * Minimum value, inclusive.
      */
@@ -318,7 +320,7 @@ data class NumberSchema(
      * Set description.
      */
     fun description(description: kotlin.String): NumberSchema =
-        copy(description = description)
+        copy(descriptionText = description)
 
     companion object {
         /**
@@ -348,7 +350,8 @@ data class IntegerSchema(
     /**
      * Human-readable description.
      */
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     /**
      * Minimum value, inclusive.
      */
@@ -398,7 +401,7 @@ data class IntegerSchema(
      * Set description.
      */
     fun description(description: kotlin.String): IntegerSchema =
-        copy(description = description)
+        copy(descriptionText = description)
 
     companion object {
         /**
@@ -426,7 +429,8 @@ data class BooleanSchema(
     /**
      * Human-readable description.
      */
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     /**
      * Default value.
      */
@@ -442,7 +446,7 @@ data class BooleanSchema(
      * Set description.
      */
     fun description(description: kotlin.String): BooleanSchema =
-        copy(description = description)
+        copy(descriptionText = description)
 
     /**
      * Set default value.
@@ -477,7 +481,8 @@ data class LegacyEnumSchema(
     @SerialName("type")
     val type: kotlin.String = StringTypeConst.value,
     val title: kotlin.String? = null,
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     @SerialName("enum")
     val values: List<kotlin.String>,
     @SerialName("enumNames")
@@ -492,7 +497,8 @@ data class UntitledSingleSelectEnumSchema(
     @SerialName("type")
     val type: kotlin.String = StringTypeConst.value,
     val title: kotlin.String? = null,
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     @SerialName("enum")
     val values: List<kotlin.String>,
     val default: kotlin.String? = null,
@@ -506,7 +512,8 @@ data class TitledSingleSelectEnumSchema(
     @SerialName("type")
     val type: kotlin.String = StringTypeConst.value,
     val title: kotlin.String? = null,
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     @SerialName("oneOf")
     val oneOf: List<ConstTitle>,
     val default: kotlin.String? = null,
@@ -556,7 +563,8 @@ data class UntitledMultiSelectEnumSchema(
     @SerialName("type")
     val type: kotlin.String = ArrayTypeConst.value,
     val title: kotlin.String? = null,
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     @SerialName("minItems")
     val minItems: ULong? = null,
     @SerialName("maxItems")
@@ -573,7 +581,8 @@ data class TitledMultiSelectEnumSchema(
     @SerialName("type")
     val type: kotlin.String = ArrayTypeConst.value,
     val title: kotlin.String? = null,
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
     @SerialName("minItems")
     val minItems: ULong? = null,
     @SerialName("maxItems")
@@ -651,7 +660,7 @@ data class EnumSchemaBuilder(
     /**
      * Description of the enum schema.
      */
-    val description: kotlin.String? = null,
+    val descriptionText: kotlin.String? = null,
     /**
      * Titles of given enum values.
      */
@@ -680,7 +689,7 @@ data class EnumSchemaBuilder(
      * Set description of enum schema.
      */
     fun description(value: kotlin.String): EnumSchemaBuilder =
-        copy(description = value)
+        copy(descriptionText = value)
 
     /**
      * Set enum as untitled and clear any previously set titles.
@@ -792,7 +801,7 @@ data class EnumSchemaBuilder(
                 SingleSelectEnumSchema.Titled(
                     TitledSingleSelectEnumSchema(
                         title = title,
-                        description = description,
+                        descriptionText = descriptionText,
                         oneOf =
                             enumTitles.zip(enumValues).map { (title, constValue) ->
                                 ConstTitle(constValue = constValue, title = title)
@@ -806,7 +815,7 @@ data class EnumSchemaBuilder(
                 SingleSelectEnumSchema.Untitled(
                     UntitledSingleSelectEnumSchema(
                         title = title,
-                        description = description,
+                        descriptionText = descriptionText,
                         values = enumValues,
                         default = default.firstOrNull(),
                     ),
@@ -820,7 +829,7 @@ data class EnumSchemaBuilder(
                 MultiSelectEnumSchema.Titled(
                     TitledMultiSelectEnumSchema(
                         title = title,
-                        description = description,
+                        descriptionText = descriptionText,
                         minItems = minItems,
                         maxItems = maxItems,
                         items =
@@ -839,7 +848,7 @@ data class EnumSchemaBuilder(
                 MultiSelectEnumSchema.Untitled(
                     UntitledMultiSelectEnumSchema(
                         title = title,
-                        description = description,
+                        descriptionText = descriptionText,
                         minItems = minItems,
                         maxItems = maxItems,
                         items = UntitledItems(values = enumValues),
@@ -892,7 +901,8 @@ data class ElicitationSchema(
     /**
      * Optional description of what this schema represents.
      */
-    val description: kotlin.String? = null,
+    @SerialName("description")
+    val descriptionText: kotlin.String? = null,
 ) {
     /**
      * Set the required fields.
@@ -910,7 +920,7 @@ data class ElicitationSchema(
      * Set the description.
      */
     fun withDescription(description: kotlin.String): ElicitationSchema =
-        copy(description = description)
+        copy(descriptionText = description)
 
     companion object {
         /**
@@ -942,7 +952,7 @@ data class ElicitationSchemaBuilder(
     val properties: Map<kotlin.String, PrimitiveSchema> = emptyMap(),
     val required: List<kotlin.String> = emptyList(),
     val title: kotlin.String? = null,
-    val description: kotlin.String? = null,
+    val descriptionText: kotlin.String? = null,
 ) {
     /**
      * Add a property to the schema.
@@ -963,7 +973,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (StringSchema) -> StringSchema,
     ): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.String(f(StringSchema.new())))
+        property(name, PrimitiveSchema.StringVariant(f(StringSchema.new())))
 
     /**
      * Add a required string property with custom builder.
@@ -972,7 +982,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (StringSchema) -> StringSchema,
     ): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.String(f(StringSchema.new())))
+        requiredProperty(name, PrimitiveSchema.StringVariant(f(StringSchema.new())))
 
     /**
      * Add a number property with custom builder.
@@ -981,7 +991,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (NumberSchema) -> NumberSchema,
     ): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Number(f(NumberSchema.new())))
+        property(name, PrimitiveSchema.NumberVariant(f(NumberSchema.new())))
 
     /**
      * Add a required number property with custom builder.
@@ -990,7 +1000,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (NumberSchema) -> NumberSchema,
     ): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Number(f(NumberSchema.new())))
+        requiredProperty(name, PrimitiveSchema.NumberVariant(f(NumberSchema.new())))
 
     /**
      * Add an integer property with custom builder.
@@ -999,7 +1009,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (IntegerSchema) -> IntegerSchema,
     ): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Integer(f(IntegerSchema.new())))
+        property(name, PrimitiveSchema.IntegerVariant(f(IntegerSchema.new())))
 
     /**
      * Add a required integer property with custom builder.
@@ -1008,7 +1018,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (IntegerSchema) -> IntegerSchema,
     ): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Integer(f(IntegerSchema.new())))
+        requiredProperty(name, PrimitiveSchema.IntegerVariant(f(IntegerSchema.new())))
 
     /**
      * Add a boolean property with custom builder.
@@ -1017,7 +1027,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (BooleanSchema) -> BooleanSchema,
     ): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Boolean(f(BooleanSchema.new())))
+        property(name, PrimitiveSchema.BooleanVariant(f(BooleanSchema.new())))
 
     /**
      * Add a required boolean property with custom builder.
@@ -1026,31 +1036,31 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (BooleanSchema) -> BooleanSchema,
     ): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Boolean(f(BooleanSchema.new())))
+        requiredProperty(name, PrimitiveSchema.BooleanVariant(f(BooleanSchema.new())))
 
     /**
      * Add a required string property.
      */
     fun requiredString(name: kotlin.String): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.String(StringSchema.new()))
+        requiredProperty(name, PrimitiveSchema.StringVariant(StringSchema.new()))
 
     /**
      * Add an optional string property.
      */
     fun optionalString(name: kotlin.String): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.String(StringSchema.new()))
+        property(name, PrimitiveSchema.StringVariant(StringSchema.new()))
 
     /**
      * Add a required email property.
      */
     fun requiredEmail(name: kotlin.String): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.String(StringSchema.email()))
+        requiredProperty(name, PrimitiveSchema.StringVariant(StringSchema.email()))
 
     /**
      * Add an optional email property.
      */
     fun optionalEmail(name: kotlin.String): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.String(StringSchema.email()))
+        property(name, PrimitiveSchema.StringVariant(StringSchema.email()))
 
     /**
      * Add a required string property with custom builder.
@@ -1059,7 +1069,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (StringSchema) -> StringSchema,
     ): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.String(f(StringSchema.new())))
+        requiredProperty(name, PrimitiveSchema.StringVariant(f(StringSchema.new())))
 
     /**
      * Add an optional string property with custom builder.
@@ -1068,19 +1078,19 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (StringSchema) -> StringSchema,
     ): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.String(f(StringSchema.new())))
+        property(name, PrimitiveSchema.StringVariant(f(StringSchema.new())))
 
     /**
      * Add a required number property with range.
      */
     fun requiredNumber(name: kotlin.String, min: Double, max: Double): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Number(NumberSchema.new().range(min, max)))
+        requiredProperty(name, PrimitiveSchema.NumberVariant(NumberSchema.new().range(min, max)))
 
     /**
      * Add an optional number property with range.
      */
     fun optionalNumber(name: kotlin.String, min: Double, max: Double): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Number(NumberSchema.new().range(min, max)))
+        property(name, PrimitiveSchema.NumberVariant(NumberSchema.new().range(min, max)))
 
     /**
      * Add a required number property with custom builder.
@@ -1089,7 +1099,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (NumberSchema) -> NumberSchema,
     ): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Number(f(NumberSchema.new())))
+        requiredProperty(name, PrimitiveSchema.NumberVariant(f(NumberSchema.new())))
 
     /**
      * Add an optional number property with custom builder.
@@ -1098,19 +1108,19 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (NumberSchema) -> NumberSchema,
     ): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Number(f(NumberSchema.new())))
+        property(name, PrimitiveSchema.NumberVariant(f(NumberSchema.new())))
 
     /**
      * Add a required integer property with range.
      */
     fun requiredInteger(name: kotlin.String, min: Long, max: Long): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Integer(IntegerSchema.new().range(min, max)))
+        requiredProperty(name, PrimitiveSchema.IntegerVariant(IntegerSchema.new().range(min, max)))
 
     /**
      * Add an optional integer property with range.
      */
     fun optionalInteger(name: kotlin.String, min: Long, max: Long): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Integer(IntegerSchema.new().range(min, max)))
+        property(name, PrimitiveSchema.IntegerVariant(IntegerSchema.new().range(min, max)))
 
     /**
      * Add a required integer property with custom builder.
@@ -1119,7 +1129,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (IntegerSchema) -> IntegerSchema,
     ): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Integer(f(IntegerSchema.new())))
+        requiredProperty(name, PrimitiveSchema.IntegerVariant(f(IntegerSchema.new())))
 
     /**
      * Add an optional integer property with custom builder.
@@ -1128,19 +1138,19 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (IntegerSchema) -> IntegerSchema,
     ): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Integer(f(IntegerSchema.new())))
+        property(name, PrimitiveSchema.IntegerVariant(f(IntegerSchema.new())))
 
     /**
      * Add a required boolean property.
      */
     fun requiredBool(name: kotlin.String): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Boolean(BooleanSchema.new()))
+        requiredProperty(name, PrimitiveSchema.BooleanVariant(BooleanSchema.new()))
 
     /**
      * Add an optional boolean property with default value.
      */
     fun optionalBool(name: kotlin.String, default: Boolean): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Boolean(BooleanSchema.new().withDefault(default)))
+        property(name, PrimitiveSchema.BooleanVariant(BooleanSchema.new().withDefault(default)))
 
     /**
      * Add a required boolean property with custom builder.
@@ -1149,7 +1159,7 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (BooleanSchema) -> BooleanSchema,
     ): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Boolean(f(BooleanSchema.new())))
+        requiredProperty(name, PrimitiveSchema.BooleanVariant(f(BooleanSchema.new())))
 
     /**
      * Add an optional boolean property with custom builder.
@@ -1158,19 +1168,19 @@ data class ElicitationSchemaBuilder(
         name: kotlin.String,
         f: (BooleanSchema) -> BooleanSchema,
     ): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Boolean(f(BooleanSchema.new())))
+        property(name, PrimitiveSchema.BooleanVariant(f(BooleanSchema.new())))
 
     /**
      * Add a required enum property using enum schema.
      */
     fun requiredEnumSchema(name: kotlin.String, enumSchema: EnumSchema): ElicitationSchemaBuilder =
-        requiredProperty(name, PrimitiveSchema.Enum(enumSchema))
+        requiredProperty(name, PrimitiveSchema.EnumVariant(enumSchema))
 
     /**
      * Add an optional enum property using enum schema.
      */
     fun optionalEnumSchema(name: kotlin.String, enumSchema: EnumSchema): ElicitationSchemaBuilder =
-        property(name, PrimitiveSchema.Enum(enumSchema))
+        property(name, PrimitiveSchema.EnumVariant(enumSchema))
 
     /**
      * Add a required enum property using values.
@@ -1179,7 +1189,7 @@ data class ElicitationSchemaBuilder(
     fun requiredEnum(name: kotlin.String, values: List<kotlin.String>): ElicitationSchemaBuilder =
         requiredProperty(
             name,
-            PrimitiveSchema.Enum(
+            PrimitiveSchema.EnumVariant(
                 EnumSchema.Legacy(
                     LegacyEnumSchema(
                         values = values,
@@ -1196,7 +1206,7 @@ data class ElicitationSchemaBuilder(
     fun optionalEnum(name: kotlin.String, values: List<kotlin.String>): ElicitationSchemaBuilder =
         property(
             name,
-            PrimitiveSchema.Enum(
+            PrimitiveSchema.EnumVariant(
                 EnumSchema.Legacy(
                     LegacyEnumSchema(
                         values = values,
@@ -1222,7 +1232,7 @@ data class ElicitationSchemaBuilder(
      * Set the schema description.
      */
     fun description(description: kotlin.String): ElicitationSchemaBuilder =
-        copy(description = description)
+        copy(descriptionText = description)
 
     /**
      * Build the elicitation schema with validation.
@@ -1238,7 +1248,7 @@ data class ElicitationSchemaBuilder(
                 title = title,
                 properties = properties,
                 required = required.ifEmpty { null },
-                description = description,
+                descriptionText = descriptionText,
             ),
         )
     }

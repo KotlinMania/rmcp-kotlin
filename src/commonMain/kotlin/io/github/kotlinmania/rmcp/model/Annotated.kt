@@ -32,7 +32,7 @@ data class Annotations(
 }
 
 @Serializable
-data class Annotated<T : AnnotateAble>(
+internal data class Annotated<T : AnnotateAble>(
     val raw: T,
     val annotations: Annotations?,
 ) {
@@ -76,23 +76,23 @@ data class Annotated<T : AnnotateAble>(
 
 interface AnnotateAble
 
-fun <T : AnnotateAble> T.optionalAnnotate(annotations: Annotations?): Annotated<T> =
+internal fun <T : AnnotateAble> T.optionalAnnotate(annotations: Annotations?): Annotated<T> =
     Annotated(this, annotations)
 
-fun <T : AnnotateAble> T.annotate(annotations: Annotations): Annotated<T> =
+internal fun <T : AnnotateAble> T.annotate(annotations: Annotations): Annotated<T> =
     Annotated(this, annotations)
 
-fun <T : AnnotateAble> T.noAnnotation(): Annotated<T> =
+internal fun <T : AnnotateAble> T.noAnnotation(): Annotated<T> =
     Annotated(this, null)
 
-fun <T : AnnotateAble> T.withAudience(audience: List<Role>): Annotated<T> =
+internal fun <T : AnnotateAble> T.withAudience(audience: List<Role>): Annotated<T> =
     annotate(Annotations(audience = audience))
 
-fun <T : AnnotateAble> T.withPriority(priority: Float): Annotated<T> =
+internal fun <T : AnnotateAble> T.withPriority(priority: Float): Annotated<T> =
     annotate(Annotations(priority = priority))
 
-fun <T : AnnotateAble> T.withTimestamp(timestamp: Instant): Annotated<T> =
+internal fun <T : AnnotateAble> T.withTimestamp(timestamp: Instant): Annotated<T> =
     annotate(Annotations(lastModified = timestamp))
 
-fun <T : AnnotateAble> T.withTimestampNow(): Annotated<T> =
+internal fun <T : AnnotateAble> T.withTimestampNow(): Annotated<T> =
     withTimestamp(Clock.System.now())

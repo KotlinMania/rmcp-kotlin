@@ -34,7 +34,8 @@ data class Prompt(
     /**
      * Optional description of what the prompt does.
      */
-    val description: String? = null,
+    @SerialName("description")
+    val descriptionText: String? = null,
     /**
      * Optional arguments that can be passed to customize the prompt.
      */
@@ -61,7 +62,7 @@ data class Prompt(
             Prompt(
                 name = name,
                 title = null,
-                description = description,
+                descriptionText = description,
                 arguments = arguments,
                 icons = null,
                 meta = null,
@@ -85,7 +86,8 @@ data class PromptArgument(
     /**
      * A description of what the argument is used for.
      */
-    val description: String? = null,
+    @SerialName("description")
+    val descriptionText: String? = null,
     /**
      * Whether this argument is required.
      */
@@ -134,7 +136,7 @@ sealed class PromptMessageContent {
      * A link to a resource that can be fetched separately.
      */
     data class ResourceLink(
-        val link: Annotated<RawResource>,
+        val link: io.github.kotlinmania.rmcp.model.Resource,
     ) : PromptMessageContent()
 
     companion object {
@@ -144,7 +146,7 @@ sealed class PromptMessageContent {
         /**
          * Create a resource link content.
          */
-        fun resourceLink(resource: Annotated<RawResource>): PromptMessageContent =
+        fun resourceLink(resource: io.github.kotlinmania.rmcp.model.Resource): PromptMessageContent =
             ResourceLink(resource)
     }
 }
@@ -188,11 +190,15 @@ data class PromptMessage(
                 role = role,
                 content =
                     PromptMessageContent.Image(
-                        RawImageContent(
-                            data = base64,
-                            mimeType = mimeType,
-                            meta = meta,
-                        ).optionalAnnotate(annotations),
+                        ImageContent(
+                            raw =
+                                RawImageContent(
+                                    data = base64,
+                                    mimeType = mimeType,
+                                    meta = meta,
+                                ),
+                            annotations = annotations,
+                        ),
                     ),
             )
         }
@@ -230,10 +236,14 @@ data class PromptMessage(
                 role = role,
                 content =
                     PromptMessageContent.Resource(
-                        RawEmbeddedResource(
-                            meta = resourceMeta,
-                            resource = resourceContents,
-                        ).optionalAnnotate(annotations),
+                        EmbeddedResource(
+                            raw =
+                                RawEmbeddedResource(
+                                    meta = resourceMeta,
+                                    resource = resourceContents,
+                                ),
+                            annotations = annotations,
+                        ),
                     ),
             )
         }
@@ -249,7 +259,7 @@ data class PromptMessage(
         /**
          * Create a new resource link message.
          */
-        fun newResourceLink(role: PromptMessageRole, resource: Annotated<RawResource>): PromptMessage =
+        fun newResourceLink(role: PromptMessageRole, resource: io.github.kotlinmania.rmcp.model.Resource): PromptMessage =
             PromptMessage(
                 role = role,
                 content = PromptMessageContent.ResourceLink(resource),
@@ -305,7 +315,11 @@ object PromptMessageContentSerializer : KSerializer<PromptMessageContent> {
                 ?: throw SerializationException("missing prompt message content type")
         return when (type) {
             "text" -> PromptMessageContent.Text(obj["text"]?.jsonPrimitive?.content.orEmpty())
-            "resource_link" -> PromptMessageContent.ResourceLink(decodeResourceLink(obj).noAnnotation())
+            "resource_link" ->
+                PromptMessageContent.ResourceLink(
+                    io.github.kotlinmania.rmcp.model
+                        .Resource(raw = decodeResourceLink(obj)),
+                )
             else -> throw SerializationException("unknown prompt message content type $type")
         }
     }
@@ -325,7 +339,7 @@ object PromptMessageContentSerializer : KSerializer<PromptMessageContent> {
             uri = obj["uri"]?.jsonPrimitive?.content.orEmpty(),
             name = obj["name"]?.jsonPrimitive?.content.orEmpty(),
             title = obj["title"]?.jsonPrimitive?.content,
-            description = obj["description"]?.jsonPrimitive?.content,
+            descriptionText = obj["description"]?.jsonPrimitive?.content,
             mimeType = obj["mimeType"]?.jsonPrimitive?.content,
             size = null,
             icons = null,

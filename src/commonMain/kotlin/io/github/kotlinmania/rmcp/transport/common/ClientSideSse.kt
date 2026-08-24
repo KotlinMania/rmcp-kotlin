@@ -8,20 +8,20 @@ import kotlin.math.pow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-typealias BoxedSseResponse = Iterator<Result<Sse>>
+internal typealias BoxedSseResponse = Iterator<Result<Sse>>
 
-data class Sse(
+internal data class Sse(
     val id: String? = null,
     val event: String? = null,
     val data: String? = null,
     val retry: Duration? = null,
 )
 
-interface SseRetryPolicy {
+internal interface SseRetryPolicy {
     fun retry(currentTimes: Int): Duration?
 }
 
-data class FixedInterval(
+internal data class FixedInterval(
     val maxTimes: Int? = null,
     val duration: Duration = DEFAULT_MIN_DURATION,
 ) : SseRetryPolicy {
@@ -38,7 +38,7 @@ data class FixedInterval(
     }
 }
 
-data class ExponentialBackoff(
+internal data class ExponentialBackoff(
     val maxTimes: Int? = null,
     val baseDuration: Duration = DEFAULT_DURATION,
 ) : SseRetryPolicy {
@@ -55,11 +55,11 @@ data class ExponentialBackoff(
     }
 }
 
-data object NeverRetry : SseRetryPolicy {
+internal data object NeverRetry : SseRetryPolicy {
     override fun retry(currentTimes: Int): Duration? = null
 }
 
-class NeverReconnect<E : Throwable>(
+internal class NeverReconnect<E : Throwable>(
     private var error: E?,
 ) : SseStreamReconnect<E> {
     override fun retryConnection(lastEventId: String?): Result<BoxedSseResponse> =
@@ -74,7 +74,7 @@ class NeverReconnect<E : Throwable>(
  * restarts an SSE stream. The default implementation is a no-op, keeping
  * existing behaviour intact.
  */
-interface SseStreamReconnect<E : Throwable> {
+internal interface SseStreamReconnect<E : Throwable> {
     fun retryConnection(lastEventId: String?): Result<BoxedSseResponse>
 
     fun handleControlEvent(event: Sse): Result<Unit> =
@@ -89,7 +89,7 @@ interface SseStreamReconnect<E : Throwable> {
     }
 }
 
-class SseAutoReconnectStream<R, E>(
+internal class SseAutoReconnectStream<R, E>(
     private val retryPolicy: SseRetryPolicy,
     private val connector: R,
     stream: BoxedSseResponse,
@@ -196,20 +196,20 @@ class SseAutoReconnectStream<R, E>(
     }
 }
 
-sealed class SseAutoReconnectStreamState {
-    data class Connected(
+internal sealed class SseAutoReconnectStreamState {
+    internal data class Connected(
         val stream: BoxedSseResponse,
     ) : SseAutoReconnectStreamState()
 
-    data class Retrying(
+    internal data class Retrying(
         val retryTimes: Int,
         val retrying: Result<BoxedSseResponse>,
     ) : SseAutoReconnectStreamState()
 
-    data class WaitingNextRetry(
+    internal data class WaitingNextRetry(
         val sleep: Duration,
         val retryTimes: Int,
     ) : SseAutoReconnectStreamState()
 
-    data object Terminated : SseAutoReconnectStreamState()
+    internal data object Terminated : SseAutoReconnectStreamState()
 }

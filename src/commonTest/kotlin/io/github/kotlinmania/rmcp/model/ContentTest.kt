@@ -60,7 +60,7 @@ class ContentTest {
                     uri = "file:///test.txt",
                     name = "test.txt",
                     title = null,
-                    description = "A test file",
+                    descriptionText = "A test file",
                     mimeType = "text/plain",
                     size = 100u,
                     icons = null,
@@ -95,7 +95,7 @@ class ContentTest {
         val resourceLink = assertIs<RawContent.ResourceLink>(content)
         assertEquals("file:///example.txt", resourceLink.value.uri)
         assertEquals("example.txt", resourceLink.value.name)
-        assertEquals("Example file", resourceLink.value.description)
+        assertEquals("Example file", resourceLink.value.descriptionText)
         assertEquals("text/plain", resourceLink.value.mimeType)
     }
 }
