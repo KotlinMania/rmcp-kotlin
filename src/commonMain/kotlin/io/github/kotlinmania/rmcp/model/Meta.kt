@@ -15,9 +15,9 @@ interface GetMeta {
 }
 
 interface GetExtensions {
-    fun extensions(): Extensions
+    val extensions: Extensions
 
-    fun extensionsMut(): Extensions
+    fun extensionsMut(): Extensions = extensions
 }
 
 /**

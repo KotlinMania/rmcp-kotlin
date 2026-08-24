@@ -180,15 +180,12 @@ data class ProgressToken(
  * HTTP extensions.
  */
 @Serializable
-data class Request<P>(
+internal data class Request<P>(
     val method: String,
     val params: P,
     @Transient
-    val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions(),
 ) : GetExtensions {
-    override fun extensions(): Extensions =
-        extensions
-
     override fun extensionsMut(): Extensions =
         extensions
 
@@ -199,7 +196,7 @@ data class Request<P>(
 }
 
 @Serializable
-data class RequestOptionalParam<P>(
+internal data class RequestOptionalParam<P>(
     val method: String,
     val params: P? = null,
     @Transient
@@ -215,17 +212,14 @@ data class RequestOptionalParam<P>(
 data class RequestNoParam(
     val method: String,
     @Transient
-    val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions(),
 ) : GetExtensions {
-    override fun extensions(): Extensions =
-        extensions
-
     override fun extensionsMut(): Extensions =
         extensions
 }
 
 @Serializable
-data class Notification<P>(
+internal data class Notification<P>(
     val method: String,
     val params: P,
     @Transient
@@ -482,7 +476,18 @@ data object CancelledNotificationMethod : ConstString {
 /**
  * Cancellation notification sent by either side for a previously issued request.
  */
-typealias CancelledNotification = Notification<CancelledNotificationParam>
+@Serializable
+data class CancelledNotification(
+    val method: String = CancelledNotificationMethod.value,
+    val params: CancelledNotificationParam,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun new(params: CancelledNotificationParam): CancelledNotification =
+            CancelledNotification(params = params)
+    }
+}
 
 /**
  * A catch-all notification either side can use to send custom messages to its peer.
@@ -534,7 +539,7 @@ data class CustomRequest(
     }
 }
 
-data object InitializeResultMethod : ConstString {
+data object InitializeRequestMethod : ConstString {
     override val value: String = "initialize"
 }
 
@@ -542,7 +547,20 @@ data object InitializeResultMethod : ConstString {
  * This request is sent from the client to the server when it first connects,
  * asking it to begin initialization.
  */
-typealias InitializeRequest = Request<InitializeRequestParams>
+@Serializable
+data class InitializeRequest(
+    val method: String = InitializeRequestMethod.value,
+    val params: InitializeRequestParams = InitializeRequestParams.default(),
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(method: ConstString, params: InitializeRequestParams): InitializeRequest =
+            InitializeRequest(method = method.value, params = params)
+    }
+}
 
 data object InitializedNotificationMethod : ConstString {
     override val value: String = "notifications/initialized"
@@ -665,7 +683,8 @@ data class Implementation(
     val name: String,
     val title: String? = null,
     val version: String,
-    val description: String? = null,
+    @SerialName("description")
+    val descriptionText: String? = null,
     val icons: List<Icon>? = null,
     @SerialName("websiteUrl")
     val websiteUrl: String? = null,
@@ -676,7 +695,7 @@ data class Implementation(
                 name = "rmcp-kotlin",
                 title = null,
                 version = "0.1.0",
-                description = null,
+                descriptionText = null,
                 icons = null,
                 websiteUrl = null,
             )
@@ -715,10 +734,6 @@ data object PingRequestMethod : ConstString {
 
 typealias PingRequest = RequestNoParam
 
-data object ProgressNotificationMethod : ConstString {
-    override val value: String = "notifications/progress"
-}
-
 @Serializable
 data class ProgressNotificationParam(
     @SerialName("progressToken")
@@ -738,7 +753,22 @@ data class ProgressNotificationParam(
     val message: String? = null,
 )
 
-typealias ProgressNotification = Notification<ProgressNotificationParam>
+data object ProgressNotificationMethod : ConstString {
+    override val value: String = "notifications/progress"
+}
+
+@Serializable
+data class ProgressNotification(
+    val method: String = ProgressNotificationMethod.value,
+    val params: ProgressNotificationParam,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun new(params: ProgressNotificationParam): ProgressNotification =
+            ProgressNotification(params = params)
+    }
+}
 
 typealias Cursor = String
 
@@ -778,7 +808,18 @@ data object ListResourcesRequestMethod : ConstString {
 /**
  * Request to list all available resources from a server.
  */
-typealias ListResourcesRequest = RequestOptionalParam<PaginatedRequestParams>
+@Serializable
+data class ListResourcesRequest(
+    val method: String = ListResourcesRequestMethod.value,
+    val params: PaginatedRequestParams? = null,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun withParam(params: PaginatedRequestParams): ListResourcesRequest =
+            ListResourcesRequest(params = params)
+    }
+}
 
 data object ListResourceTemplatesRequestMethod : ConstString {
     override val value: String = "resources/templates/list"
@@ -787,7 +828,18 @@ data object ListResourceTemplatesRequestMethod : ConstString {
 /**
  * Request to list all available resource templates from a server.
  */
-typealias ListResourceTemplatesRequest = RequestOptionalParam<PaginatedRequestParams>
+@Serializable
+data class ListResourceTemplatesRequest(
+    val method: String = ListResourceTemplatesRequestMethod.value,
+    val params: PaginatedRequestParams? = null,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun withParam(params: PaginatedRequestParams): ListResourceTemplatesRequest =
+            ListResourceTemplatesRequest(params = params)
+    }
+}
 
 data object ReadResourceRequestMethod : ConstString {
     override val value: String = "resources/read"
@@ -836,7 +888,20 @@ data class ReadResourceResult(
 /**
  * Request to read a specific resource.
  */
-typealias ReadResourceRequest = Request<ReadResourceRequestParams>
+@Serializable
+data class ReadResourceRequest(
+    val method: String = ReadResourceRequestMethod.value,
+    val params: ReadResourceRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: ReadResourceRequestParams): ReadResourceRequest =
+            ReadResourceRequest(params = params)
+    }
+}
 
 data object ResourceListChangedNotificationMethod : ConstString {
     override val value: String = "notifications/resources/list_changed"
@@ -880,7 +945,20 @@ typealias SubscribeRequestParam = SubscribeRequestParams
 /**
  * Request to subscribe to resource updates.
  */
-typealias SubscribeRequest = Request<SubscribeRequestParams>
+@Serializable
+data class SubscribeRequest(
+    val method: String = SubscribeRequestMethod.value,
+    val params: SubscribeRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: SubscribeRequestParams): SubscribeRequest =
+            SubscribeRequest(params = params)
+    }
+}
 
 data object UnsubscribeRequestMethod : ConstString {
     override val value: String = "resources/unsubscribe"
@@ -915,7 +993,20 @@ typealias UnsubscribeRequestParam = UnsubscribeRequestParams
 /**
  * Request to unsubscribe from resource updates.
  */
-typealias UnsubscribeRequest = Request<UnsubscribeRequestParams>
+@Serializable
+data class UnsubscribeRequest(
+    val method: String = UnsubscribeRequestMethod.value,
+    val params: UnsubscribeRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: UnsubscribeRequestParams): UnsubscribeRequest =
+            UnsubscribeRequest(params = params)
+    }
+}
 
 data object ResourceUpdatedNotificationMethod : ConstString {
     override val value: String = "notifications/resources/updated"
@@ -935,7 +1026,18 @@ data class ResourceUpdatedNotificationParam(
 /**
  * Notification sent when a subscribed resource is updated.
  */
-typealias ResourceUpdatedNotification = Notification<ResourceUpdatedNotificationParam>
+@Serializable
+data class ResourceUpdatedNotification(
+    val method: String = ResourceUpdatedNotificationMethod.value,
+    val params: ResourceUpdatedNotificationParam,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun new(params: ResourceUpdatedNotificationParam): ResourceUpdatedNotification =
+            ResourceUpdatedNotification(params = params)
+    }
+}
 
 data object ListPromptsRequestMethod : ConstString {
     override val value: String = "prompts/list"
@@ -944,7 +1046,18 @@ data object ListPromptsRequestMethod : ConstString {
 /**
  * Request to list all available prompts from a server.
  */
-typealias ListPromptsRequest = RequestOptionalParam<PaginatedRequestParams>
+@Serializable
+data class ListPromptsRequest(
+    val method: String = ListPromptsRequestMethod.value,
+    val params: PaginatedRequestParams? = null,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun withParam(params: PaginatedRequestParams): ListPromptsRequest =
+            ListPromptsRequest(params = params)
+    }
+}
 
 @Serializable
 data class ListPromptsResult(
@@ -991,7 +1104,20 @@ typealias GetPromptRequestParam = GetPromptRequestParams
 /**
  * Request to get a specific prompt.
  */
-typealias GetPromptRequest = Request<GetPromptRequestParams>
+@Serializable
+data class GetPromptRequest(
+    val method: String = GetPromptRequestMethod.value,
+    val params: GetPromptRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: GetPromptRequestParams): GetPromptRequest =
+            GetPromptRequest(params = params)
+    }
+}
 
 data object PromptListChangedNotificationMethod : ConstString {
     override val value: String = "notifications/prompts/list_changed"
@@ -1074,7 +1200,20 @@ typealias SetLevelRequestParam = SetLevelRequestParams
 /**
  * Request to set the logging level.
  */
-typealias SetLevelRequest = Request<SetLevelRequestParams>
+@Serializable
+data class SetLevelRequest(
+    val method: String = SetLevelRequestMethod.value,
+    val params: SetLevelRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: SetLevelRequestParams): SetLevelRequest =
+            SetLevelRequest(params = params)
+    }
+}
 
 data object LoggingMessageNotificationMethod : ConstString {
     override val value: String = "notifications/message"
@@ -1102,13 +1241,37 @@ data class LoggingMessageNotificationParam(
 /**
  * Notification containing a log message.
  */
-typealias LoggingMessageNotification = Notification<LoggingMessageNotificationParam>
+@Serializable
+data class LoggingMessageNotification(
+    val method: String = LoggingMessageNotificationMethod.value,
+    val params: LoggingMessageNotificationParam,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun new(params: LoggingMessageNotificationParam): LoggingMessageNotification =
+            LoggingMessageNotification(params = params)
+    }
+}
 
 data object CreateMessageRequestMethod : ConstString {
     override val value: String = "sampling/createMessage"
 }
 
-typealias CreateMessageRequest = Request<CreateMessageRequestParams>
+@Serializable
+data class CreateMessageRequest(
+    val method: String = CreateMessageRequestMethod.value,
+    val params: CreateMessageRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: CreateMessageRequestParams): CreateMessageRequest =
+            CreateMessageRequest(params = params)
+    }
+}
 
 /**
  * Represents the role of a participant in a conversation or message exchange.
@@ -1175,21 +1338,21 @@ data class ToolChoice(
  * Single or array content wrapper.
  */
 @Serializable
-sealed class SamplingContent<T> {
+sealed class SamplingContent {
     @Serializable
-    data class Single<T>(
-        val item: T,
-    ) : SamplingContent<T>()
+    data class Single(
+        val item: SamplingMessageContent,
+    ) : SamplingContent()
 
     @Serializable
-    data class Multiple<T>(
-        val items: List<T>,
-    ) : SamplingContent<T>()
+    data class Multiple(
+        val items: List<SamplingMessageContent>,
+    ) : SamplingContent()
 
     /**
      * Convert to a list regardless of whether it is single or multiple.
      */
-    fun intoVec(): List<T> =
+    fun intoVec(): List<SamplingMessageContent> =
         when (this) {
             is Single -> listOf(item)
             is Multiple -> items
@@ -1216,7 +1379,7 @@ sealed class SamplingContent<T> {
     /**
      * Get the first item if present.
      */
-    fun first(): T? =
+    fun first(): SamplingMessageContent? =
         when (this) {
             is Single -> item
             is Multiple -> items.firstOrNull()
@@ -1225,17 +1388,17 @@ sealed class SamplingContent<T> {
     /**
      * Iterate over all content items.
      */
-    fun iter(): List<T> =
+    fun iter(): List<SamplingMessageContent> =
         intoVec()
 
     companion object {
-        fun <T> default(): SamplingContent<T> =
+        fun default(): SamplingContent =
             Multiple(emptyList())
 
-        fun <T> from(item: T): SamplingContent<T> =
+        fun from(item: SamplingMessageContent): SamplingContent =
             Single(item)
 
-        fun <T> from(items: List<T>): SamplingContent<T> =
+        fun from(items: List<SamplingMessageContent>): SamplingContent =
             Multiple(items)
     }
 }
@@ -1252,7 +1415,7 @@ data class SamplingMessage(
     /**
      * The actual content of the message.
      */
-    val content: SamplingContent<SamplingMessageContent>,
+    val content: SamplingContent,
     @SerialName("_meta")
     val meta: Meta? = null,
 ) {
@@ -1633,7 +1796,24 @@ data class CompleteRequestParams(
 @Deprecated("Use CompleteRequestParams instead")
 typealias CompleteRequestParam = CompleteRequestParams
 
-typealias CompleteRequest = Request<CompleteRequestParams>
+data object CompleteRequestMethod : ConstString {
+    override val value: String = "completion/complete"
+}
+
+@Serializable
+data class CompleteRequest(
+    val method: String = CompleteRequestMethod.value,
+    val params: CompleteRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: CompleteRequestParams): CompleteRequest =
+            CompleteRequest(params = params)
+    }
+}
 
 @Serializable
 data class CompletionInfo(
@@ -1767,10 +1947,6 @@ data class PromptReference(
     val name: String,
     val title: String? = null,
 )
-
-data object CompleteRequestMethod : ConstString {
-    override val value: String = "completion/complete"
-}
 
 @Serializable
 data class ArgumentInfo(
@@ -1920,7 +2096,20 @@ data class CreateElicitationResult(
 /**
  * Request type for creating an elicitation to gather user input.
  */
-typealias CreateElicitationRequest = Request<CreateElicitationRequestParams>
+@Serializable
+data class CreateElicitationRequest(
+    val method: String = ElicitationCreateRequestMethod.value,
+    val params: CreateElicitationRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: CreateElicitationRequestParams): CreateElicitationRequest =
+            CreateElicitationRequest(params = params)
+    }
+}
 
 /**
  * Notification parameters for a URL elicitation completion notification.
@@ -1934,7 +2123,20 @@ data class ElicitationResponseNotificationParam(
 /**
  * Notification sent when a URL elicitation process is completed.
  */
-typealias ElicitationCompletionNotification = Notification<ElicitationResponseNotificationParam>
+@Serializable
+data class ElicitationCompletionNotification(
+    val method: String = ElicitationResponseNotificationMethod.value,
+    val params: ElicitationResponseNotificationParam,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun new(params: ElicitationResponseNotificationParam): ElicitationCompletionNotification =
+            ElicitationCompletionNotification(params = params)
+    }
+}
+
+typealias ElicitationResponseNotification = ElicitationCompletionNotification
 
 /**
  * The result of a tool call operation.
@@ -2024,7 +2226,18 @@ data object ListToolsRequestMethod : ConstString {
 /**
  * Request to list all available tools from a server.
  */
-typealias ListToolsRequest = RequestOptionalParam<PaginatedRequestParams>
+@Serializable
+data class ListToolsRequest(
+    val method: String = ListToolsRequestMethod.value,
+    val params: PaginatedRequestParams? = null,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun new(params: PaginatedRequestParams? = null): ListToolsRequest =
+            ListToolsRequest(params = params)
+    }
+}
 
 @Serializable
 data class ListToolsResult(
@@ -2089,7 +2302,20 @@ typealias CallToolRequestParam = CallToolRequestParams
 /**
  * Request to call a specific tool.
  */
-typealias CallToolRequest = Request<CallToolRequestParams>
+@Serializable
+data class CallToolRequest(
+    val method: String = CallToolRequestMethod.value,
+    val params: CallToolRequestParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: CallToolRequestParams): CallToolRequest =
+            CallToolRequest(params = params)
+    }
+}
 
 /**
  * Result of sampling create-message.
@@ -2130,7 +2356,8 @@ data class CreateMessageResult(
 
 @Serializable
 data class GetPromptResult(
-    val description: String? = null,
+    @SerialName("description")
+    val descriptionText: String? = null,
     val messages: List<PromptMessage>,
 )
 
@@ -2138,7 +2365,20 @@ data object GetTaskInfoMethod : ConstString {
     override val value: String = "tasks/get"
 }
 
-typealias GetTaskInfoRequest = Request<GetTaskInfoParams>
+@Serializable
+data class GetTaskInfoRequest(
+    val method: String = GetTaskInfoMethod.value,
+    val params: GetTaskInfoParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: GetTaskInfoParams): GetTaskInfoRequest =
+            GetTaskInfoRequest(params = params)
+    }
+}
 
 @Serializable
 data class GetTaskInfoParams(
@@ -2165,13 +2405,37 @@ data object ListTasksMethod : ConstString {
     override val value: String = "tasks/list"
 }
 
-typealias ListTasksRequest = RequestOptionalParam<PaginatedRequestParams>
+@Serializable
+data class ListTasksRequest(
+    val method: String = ListTasksMethod.value,
+    val params: PaginatedRequestParams? = null,
+    @Transient
+    val extensions: Extensions = Extensions(),
+) {
+    companion object {
+        fun new(params: PaginatedRequestParams? = null): ListTasksRequest =
+            ListTasksRequest(params = params)
+    }
+}
 
 data object GetTaskResultMethod : ConstString {
     override val value: String = "tasks/result"
 }
 
-typealias GetTaskResultRequest = Request<GetTaskResultParams>
+@Serializable
+data class GetTaskResultRequest(
+    val method: String = GetTaskResultMethod.value,
+    val params: GetTaskResultParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: GetTaskResultParams): GetTaskResultRequest =
+            GetTaskResultRequest(params = params)
+    }
+}
 
 @Serializable
 data class GetTaskResultParams(
@@ -2198,7 +2462,20 @@ data object CancelTaskMethod : ConstString {
     override val value: String = "tasks/cancel"
 }
 
-typealias CancelTaskRequest = Request<CancelTaskParams>
+@Serializable
+data class CancelTaskRequest(
+    val method: String = CancelTaskMethod.value,
+    val params: CancelTaskParams,
+    @Transient
+    override val extensions: Extensions = Extensions(),
+) : GetExtensions {
+    override fun extensionsMut(): Extensions = extensions
+
+    companion object {
+        fun new(params: CancelTaskParams): CancelTaskRequest =
+            CancelTaskRequest(params = params)
+    }
+}
 
 @Serializable
 data class CancelTaskParams(

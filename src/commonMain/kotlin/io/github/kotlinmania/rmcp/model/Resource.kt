@@ -25,7 +25,8 @@ data class RawResource(
     /**
      * Optional description of the resource.
      */
-    val description: String? = null,
+    @SerialName("description")
+    val descriptionText: String? = null,
     /**
      * MIME type of the resource content, `text` or `blob`.
      */
@@ -58,7 +59,7 @@ data class RawResource(
                 uri = uri,
                 name = name,
                 title = null,
-                description = null,
+                descriptionText = null,
                 mimeType = null,
                 size = null,
                 icons = null,
@@ -67,7 +68,16 @@ data class RawResource(
     }
 }
 
-typealias Resource = Annotated<RawResource>
+@Serializable
+data class Resource(
+    val raw: RawResource,
+    val annotations: Annotations? = null,
+) {
+    companion object {
+        fun new(raw: RawResource, annotations: Annotations? = null): Resource =
+            Resource(raw, annotations)
+    }
+}
 
 @Serializable
 data class RawResourceTemplate(
@@ -75,7 +85,8 @@ data class RawResourceTemplate(
     val uriTemplate: String,
     val name: String,
     val title: String? = null,
-    val description: String? = null,
+    @SerialName("description")
+    val descriptionText: String? = null,
     @SerialName("mimeType")
     val mimeType: String? = null,
     /**
@@ -84,7 +95,16 @@ data class RawResourceTemplate(
     val icons: List<Icon>? = null,
 ) : AnnotateAble
 
-typealias ResourceTemplate = Annotated<RawResourceTemplate>
+@Serializable
+data class ResourceTemplate(
+    val raw: RawResourceTemplate,
+    val annotations: Annotations? = null,
+) {
+    companion object {
+        fun new(raw: RawResourceTemplate, annotations: Annotations? = null): ResourceTemplate =
+            ResourceTemplate(raw, annotations)
+    }
+}
 
 @Serializable
 sealed class ResourceContents {

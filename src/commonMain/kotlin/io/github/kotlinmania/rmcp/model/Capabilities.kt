@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 
-typealias ExperimentalCapabilities = MutableMap<String, JsonObject>
+typealias ExperimentalCapabilities = Map<String, JsonObject>
 
 /**
  * MCP extension capabilities map.
@@ -17,7 +17,7 @@ typealias ExperimentalCapabilities = MutableMap<String, JsonObject>
  * per-extension settings objects. An empty object indicates support with no
  * settings.
  */
-typealias ExtensionCapabilities = MutableMap<String, JsonObject>
+typealias ExtensionCapabilities = Map<String, JsonObject>
 
 @Serializable
 data class PromptsCapability(
@@ -280,13 +280,13 @@ class ServerCapabilitiesBuilder(
         )
 
     fun enableExperimental(): ServerCapabilitiesBuilder =
-        apply { experimental = mutableMapOf() }
+        apply { experimental = emptyMap() }
 
     fun enableExperimentalWith(experimental: ExperimentalCapabilities): ServerCapabilitiesBuilder =
         apply { this.experimental = experimental }
 
     fun enableExtensions(): ServerCapabilitiesBuilder =
-        apply { extensions = mutableMapOf() }
+        apply { extensions = emptyMap() }
 
     fun enableExtensionsWith(extensions: ExtensionCapabilities): ServerCapabilitiesBuilder =
         apply { this.extensions = extensions }
@@ -359,13 +359,13 @@ class ClientCapabilitiesBuilder(
         )
 
     fun enableExperimental(): ClientCapabilitiesBuilder =
-        apply { experimental = mutableMapOf() }
+        apply { experimental = emptyMap() }
 
     fun enableExperimentalWith(experimental: ExperimentalCapabilities): ClientCapabilitiesBuilder =
         apply { this.experimental = experimental }
 
     fun enableExtensions(): ClientCapabilitiesBuilder =
-        apply { extensions = mutableMapOf() }
+        apply { extensions = emptyMap() }
 
     fun enableExtensionsWith(extensions: ExtensionCapabilities): ClientCapabilitiesBuilder =
         apply { this.extensions = extensions }

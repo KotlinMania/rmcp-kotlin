@@ -35,7 +35,16 @@ data class RawTextContent(
     val meta: Meta? = null,
 ) : AnnotateAble
 
-typealias TextContent = Annotated<RawTextContent>
+@Serializable
+data class TextContent(
+    val raw: RawTextContent,
+    val annotations: Annotations? = null,
+) {
+    companion object {
+        fun new(raw: RawTextContent, annotations: Annotations? = null): TextContent =
+            TextContent(raw, annotations)
+    }
+}
 
 @Serializable
 data class RawImageContent(
@@ -52,7 +61,16 @@ data class RawImageContent(
     val meta: Meta? = null,
 ) : AnnotateAble
 
-typealias ImageContent = Annotated<RawImageContent>
+@Serializable
+data class ImageContent(
+    val raw: RawImageContent,
+    val annotations: Annotations? = null,
+) {
+    companion object {
+        fun new(raw: RawImageContent, annotations: Annotations? = null): ImageContent =
+            ImageContent(raw, annotations)
+    }
+}
 
 @Serializable
 data class RawEmbeddedResource(
@@ -64,7 +82,16 @@ data class RawEmbeddedResource(
     val resource: ResourceContents,
 ) : AnnotateAble
 
-typealias EmbeddedResource = Annotated<RawEmbeddedResource>
+@Serializable
+data class EmbeddedResource(
+    val raw: RawEmbeddedResource,
+    val annotations: Annotations? = null,
+) {
+    companion object {
+        fun new(raw: RawEmbeddedResource, annotations: Annotations? = null): EmbeddedResource =
+            EmbeddedResource(raw, annotations)
+    }
+}
 
 fun EmbeddedResource.getText(): String =
     when (val resource = raw.resource) {
@@ -79,7 +106,16 @@ data class RawAudioContent(
     val mimeType: String,
 ) : AnnotateAble
 
-typealias AudioContent = Annotated<RawAudioContent>
+@Serializable
+data class AudioContent(
+    val raw: RawAudioContent,
+    val annotations: Annotations? = null,
+) {
+    companion object {
+        fun new(raw: RawAudioContent, annotations: Annotations? = null): AudioContent =
+            AudioContent(raw, annotations)
+    }
+}
 
 /**
  * Tool call request from assistant (SEP-1577).
@@ -380,7 +416,7 @@ object RawContentSerializer : KSerializer<RawContent> {
             uri = obj["uri"]?.jsonPrimitive?.content.orEmpty(),
             name = obj["name"]?.jsonPrimitive?.content.orEmpty(),
             title = obj["title"]?.jsonPrimitive?.content,
-            description = obj["description"]?.jsonPrimitive?.content,
+            descriptionText = obj["description"]?.jsonPrimitive?.content,
             mimeType = obj["mimeType"]?.jsonPrimitive?.content,
             size = null,
             icons = null,

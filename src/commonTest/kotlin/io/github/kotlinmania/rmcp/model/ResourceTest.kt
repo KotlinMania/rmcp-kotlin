@@ -27,7 +27,7 @@ class ResourceTest {
                 uri = "file:///test.txt",
                 title = null,
                 name = "test",
-                description = "Test resource",
+                descriptionText = "Test resource",
                 mimeType = "text/plain",
                 size = 100u,
                 icons = null,
@@ -67,7 +67,7 @@ class ResourceTest {
                 uriTemplate = "file:///{path}",
                 name = "template",
                 title = "Test Template",
-                description = "A test resource template",
+                descriptionText = "A test resource template",
                 mimeType = "text/plain",
                 icons =
                     listOf(
@@ -105,7 +105,7 @@ class ResourceTest {
                 uriTemplate = "file:///{path}",
                 name = "template",
                 title = null,
-                description = null,
+                descriptionText = null,
                 mimeType = null,
                 icons = null,
             )

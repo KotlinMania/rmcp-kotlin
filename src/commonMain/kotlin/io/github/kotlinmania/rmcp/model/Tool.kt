@@ -29,7 +29,8 @@ data class Tool(
     /**
      * A description of what the tool does.
      */
-    val description: String? = null,
+    @SerialName("description")
+    val descriptionText: String? = null,
     /**
      * A JSON Schema object defining the expected parameters for the tool.
      */
@@ -67,7 +68,7 @@ data class Tool(
             Tool(
                 name = name,
                 title = null,
-                description = description,
+                descriptionText = description,
                 inputSchema = inputSchema,
                 outputSchema = null,
                 annotations = null,
