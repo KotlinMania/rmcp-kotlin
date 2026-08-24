@@ -5,9 +5,9 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 21/56 (37.5%)
-- **Function parity:** 268/863 matched (target 451) — 31.1%
-- **Class/type parity:** 218/462 matched (target 340) — 47.2%
-- **Combined symbol parity:** 486/1325 matched (target 791) — 36.7%
+- **Function parity:** 268/863 matched (target 492) — 31.1%
+- **Class/type parity:** 218/462 matched (target 341) — 47.2%
+- **Combined symbol parity:** 486/1325 matched (target 833) — 36.7%
 - **Average inline-code cosine:** 0.46 (function body across 21 matched files)
 - **Average documentation cosine:** 0.69 (doc text across 21 matched files)
 - **Cheat-zeroed Files:** 2
@@ -41,9 +41,9 @@ Every matched file is listed below with function and type symbol parity.
 ### 2. model.elicitation_schema
 
 - **Target:** `model.ElicitationSchema`
-- **Similarity:** 0.53
+- **Similarity:** 0.52
 - **Dependents:** 0
-- **Priority Score:** 331604.7
+- **Priority Score:** 331604.8
 - **Functions:** 64/91 matched
 - **Missing functions:** `from_type`, `test_string_schema_serialization`, `test_number_schema_serialization`, `test_integer_schema_serialization`, `test_boolean_schema_serialization`, `test_enum_schema_untitled_single_select_serialization`, `test_enum_schema_untitled_multi_select_serialization`, `test_enum_schema_titled_single_select_serialization`, `test_enum_schema_legacy_serialization`, `test_enum_schema_titled_multi_select_serialization`, `test_enum_schema_single_select_with_default`, `test_enum_schema_multi_select_with_default`, `test_enum_schema_transition_clears_defaults`, `test_enum_schema_multi_to_single_transition`, `test_enum_schema_invalid_single_default`, `test_enum_schema_invalid_multi_default`, `test_enum_schema_titled_with_default`, `test_enum_schema_untitled_after_titled`, `test_primitive_schema_enum_deserialization`, `test_elicitation_schema_builder_simple`, `test_elicitation_schema_builder_complex`, `test_elicitation_schema_serialization`, `test_integer_range_validation`, `test_string_length_validation`, `test_integer_range_validation_with_result`, `default_untitled_multi_select`, `test_schema_inference_for_enum_fields`
 - **Types:** 20/25 matched (target 37)
@@ -53,12 +53,12 @@ Every matched file is listed below with function and type symbol parity.
 ### 3. model
 
 - **Target:** `model.Model`
-- **Similarity:** 0.43
+- **Similarity:** 0.42
 - **Dependents:** 0
-- **Priority Score:** 292005.7
-- **Functions:** 71/95 matched (target 140)
-- **Missing functions:** `object`, `fmt`, `schema_name`, `json_schema`, `meta_mut`, `try_from`, `task_mut`, `try_into`, `test_notification_serde`, `test_custom_client_notification_roundtrip`, `test_custom_server_notification_roundtrip`, `test_custom_request_roundtrip`, `test_request_conversion`, `test_initial_request_response_serde`, `test_negative_and_large_request_ids`, `test_protocol_version_order`, `test_icon_serialization`, `test_icon_minimal`, `test_implementation_with_icons`, `test_backward_compatibility`, `test_initialize_with_icons`, `test_elicitation_deserialization_untagged`, `test_elicitation_deserialization`, `test_elicitation_serialization`
-- **Types:** 122/125 matched (target 186)
+- **Priority Score:** 302005.8
+- **Functions:** 70/95 matched (target 174)
+- **Missing functions:** `object`, `fmt`, `schema_name`, `json_schema`, `extensions`, `meta_mut`, `try_from`, `task_mut`, `try_into`, `test_notification_serde`, `test_custom_client_notification_roundtrip`, `test_custom_server_notification_roundtrip`, `test_custom_request_roundtrip`, `test_request_conversion`, `test_initial_request_response_serde`, `test_negative_and_large_request_ids`, `test_protocol_version_order`, `test_icon_serialization`, `test_icon_minimal`, `test_implementation_with_icons`, `test_backward_compatibility`, `test_initialize_with_icons`, `test_elicitation_deserialization_untagged`, `test_elicitation_deserialization`, `test_elicitation_serialization`
+- **Types:** 122/125 matched (target 187)
 - **Missing types:** `Error`, `CreateElicitationRequestParamDeserializeHelper`, `CallToolResultHelper`
 - **Tests:** 0/16 matched
 
@@ -103,11 +103,11 @@ Every matched file is listed below with function and type symbol parity.
 ### 7. model.meta
 
 - **Target:** `model.Meta`
-- **Similarity:** 0.30
+- **Similarity:** 0.34
 - **Dependents:** 0
-- **Priority Score:** 82207.0
-- **Functions:** 9/16 matched (target 14)
-- **Missing functions:** `extensions`, `extensions_mut`, `get_meta_mut`, `get_meta`, `deref`, `deref_mut`, `insert_extension`
+- **Priority Score:** 72206.6
+- **Functions:** 10/16 matched (target 15)
+- **Missing functions:** `extensions`, `get_meta_mut`, `get_meta`, `deref`, `deref_mut`, `insert_extension`
 - **Types:** 5/6 matched (target 5)
 - **Missing types:** `Target`
 
@@ -150,7 +150,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Similarity:** 0.19
 - **Dependents:** 0
 - **Priority Score:** 41108.1
-- **Functions:** 2/6 matched (target 2)
+- **Functions:** 2/6 matched (target 4)
 - **Missing functions:** `test_resource_serialization`, `test_resource_contents_serialization`, `test_resource_template_with_icons`, `test_resource_template_without_icons`
 - **Types:** 5/5 matched (target 7)
 - **Missing types:** _none_
@@ -186,7 +186,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Similarity:** 0.74
 - **Dependents:** 0
 - **Priority Score:** 3202.6
-- **Functions:** 18/18 matched (target 31)
+- **Functions:** 18/18 matched (target 35)
 - **Missing functions:** _none_
 - **Types:** 14/14 matched (target 21)
 - **Missing types:** _none_
