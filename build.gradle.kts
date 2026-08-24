@@ -971,6 +971,14 @@ tasks.register("swiftExportSmokeTest") {
                 )
             }
         }
+        val spmPackageDir = layout.buildDirectory.dir("SPMPackage").get().asFile
+        val pastTime = System.currentTimeMillis() - 10000L
+        if (spmPackageDir.exists()) {
+            spmPackageDir.walkTopDown().forEach { it.setLastModified(pastTime) }
+        }
+
+        val harnessBuildDir = layout.projectDirectory.dir("swift-test-harness/.build").asFile
+        harnessBuildDir.deleteRecursively()
 
         execOperations
             .exec {
