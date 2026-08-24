@@ -922,6 +922,7 @@ tasks.register("swiftExportSmokeTest") {
     group = "verification"
     description = "Builds the Swift Export SPM package and runs swift test against it."
     outputs.upToDateWhen { false }
+    mustRunAfter("hostTests")
 
     doLast {
         val execOperations = serviceOf<ExecOperations>()
@@ -937,6 +938,7 @@ tasks.register("swiftExportSmokeTest") {
                 commandLine(
                     "./gradlew",
                     "embedSwiftExportForXcode",
+                    "--max-workers=1",
                     "--no-configuration-cache",
                     "--no-daemon",
                     "--console=plain",
@@ -971,6 +973,12 @@ tasks.register("swiftExportSmokeTest") {
                 )
             }
         }
+
+        execOperations
+            .exec {
+                workingDir = layout.projectDirectory.dir("swift-test-harness").asFile
+                commandLine("swift", "package", "reset")
+            }.assertNormalExitValue()
 
         execOperations
             .exec {
