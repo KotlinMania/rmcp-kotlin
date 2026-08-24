@@ -5,7 +5,13 @@ import Rmcp
 struct RmcpExportTests {
     @Test("Swift module loads cleanly")
     func testSwiftModuleLoads() {
-        #expect(true)
+        #expect(Bool(true))
+    }
+
+    @Test("Exported model types are accessible")
+    func testExportedTypes() {
+        let userRole = model.Role.User
+        #expect(userRole == .User)
     }
 }
 
