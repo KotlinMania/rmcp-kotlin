@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 21/56 (37.5%)
-- **Function parity:** 268/863 matched (target 494) — 31.1%
-- **Class/type parity:** 218/462 matched (target 342) — 47.2%
-- **Combined symbol parity:** 486/1325 matched (target 836) — 36.7%
-- **Average inline-code cosine:** 0.46 (function body across 21 matched files)
-- **Average documentation cosine:** 0.69 (doc text across 21 matched files)
+- **Files Present:** 19/56 (33.9%)
+- **Function parity:** 314/866 matched (target 563) — 36.3%
+- **Class/type parity:** 218/462 matched (target 359) — 47.2%
+- **Combined symbol parity:** 532/1328 matched (target 922) — 40.1%
+- **Average inline-code cosine:** 0.51 (function body across 19 matched files)
+- **Average documentation cosine:** 0.76 (doc text across 19 matched files)
 - **Cheat-zeroed Files:** 2
-- **Critical Issues:** 14 files with <0.60 function similarity
+- **Critical Issues:** 12 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -38,45 +38,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 10)
 - **Missing types:** _none_
 
-### 2. model.elicitation_schema
-
-- **Target:** `model.ElicitationSchema`
-- **Similarity:** 0.52
-- **Dependents:** 0
-- **Priority Score:** 331604.8
-- **Functions:** 64/91 matched
-- **Missing functions:** `from_type`, `test_string_schema_serialization`, `test_number_schema_serialization`, `test_integer_schema_serialization`, `test_boolean_schema_serialization`, `test_enum_schema_untitled_single_select_serialization`, `test_enum_schema_untitled_multi_select_serialization`, `test_enum_schema_titled_single_select_serialization`, `test_enum_schema_legacy_serialization`, `test_enum_schema_titled_multi_select_serialization`, `test_enum_schema_single_select_with_default`, `test_enum_schema_multi_select_with_default`, `test_enum_schema_transition_clears_defaults`, `test_enum_schema_multi_to_single_transition`, `test_enum_schema_invalid_single_default`, `test_enum_schema_invalid_multi_default`, `test_enum_schema_titled_with_default`, `test_enum_schema_untitled_after_titled`, `test_primitive_schema_enum_deserialization`, `test_elicitation_schema_builder_simple`, `test_elicitation_schema_builder_complex`, `test_elicitation_schema_serialization`, `test_integer_range_validation`, `test_string_length_validation`, `test_integer_range_validation_with_result`, `default_untitled_multi_select`, `test_schema_inference_for_enum_fields`
-- **Types:** 20/25 matched (target 37)
-- **Missing types:** `SingleSelect`, `MultiSelect`, `TitledEnum`, `UntitledEnum`, `UserInfo`
-- **Tests:** 0/26 matched
-
-### 3. model
+### 2. model
 
 - **Target:** `model.Model`
-- **Similarity:** 0.42
+- **Similarity:** 0.48
 - **Dependents:** 0
-- **Priority Score:** 302005.8
-- **Functions:** 70/95 matched (target 174)
-- **Missing functions:** `object`, `fmt`, `schema_name`, `json_schema`, `extensions`, `meta_mut`, `try_from`, `task_mut`, `try_into`, `test_notification_serde`, `test_custom_client_notification_roundtrip`, `test_custom_server_notification_roundtrip`, `test_custom_request_roundtrip`, `test_request_conversion`, `test_initial_request_response_serde`, `test_negative_and_large_request_ids`, `test_protocol_version_order`, `test_icon_serialization`, `test_icon_minimal`, `test_implementation_with_icons`, `test_backward_compatibility`, `test_initialize_with_icons`, `test_elicitation_deserialization_untagged`, `test_elicitation_deserialization`, `test_elicitation_serialization`
-- **Types:** 122/125 matched (target 187)
+- **Priority Score:** 152005.2
+- **Functions:** 85/95 matched (target 211)
+- **Missing functions:** `object`, `fmt`, `schema_name`, `json_schema`, `extensions`, `meta_mut`, `try_from`, `task_mut`, `try_into`, `test_request_conversion`
+- **Types:** 122/125 matched (target 199)
 - **Missing types:** `Error`, `CreateElicitationRequestParamDeserializeHelper`, `CallToolResultHelper`
-- **Tests:** 0/16 matched
+- **Tests:** 15/16 matched
 
-### 4. server.prompt
-
-- **Target:** `model.PromptTest [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 191910.0
-- **Functions:** 0/7 matched (target 3)
-- **Missing functions:** `new`, `as_request_context`, `as_request_context_mut`, `into_get_prompt_result`, `poll`, `from_context_part`, `cached_arguments_from_schema`
-- **Types:** 0/12 matched (target 1)
-- **Missing types:** `PromptContext`, `GetPromptHandler`, `DynGetPromptHandler`, `AsyncMethodAdapter`, `AsyncMethodWithArgsAdapter`, `AsyncPromptAdapter`, `SyncPromptAdapter`, `AsyncPromptMethodAdapter`, `SyncPromptMethodAdapter`, `IntoGetPromptResult`, `Output`, `PromptName`
-- **Provenance warning:** port-lint provenance header matched only by basename: `model/prompt.rs` vs expected `handler/server/prompt.rs`
-- **Proposed provenance header:** `// port-lint: source handler/server/prompt.rs` (current: `// port-lint: source model/prompt.rs`)
-- **Lint issues:** 1
-
-### 5. model.extension
+### 3. model.extension
 
 - **Target:** `model.Extension`
 - **Similarity:** 0.24
@@ -88,7 +62,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `AnyMap`, `IdHasher`, `AnyClone`
 - **Tests:** 1/1 matched
 
-### 6. server.common
+### 4. server.common
 
 - **Target:** `server.Common`
 - **Similarity:** 0.04
@@ -100,7 +74,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `TestObject`, `AnotherTestObject`
 - **Tests:** 0/9 matched
 
-### 7. model.meta
+### 5. model.elicitation_schema
+
+- **Target:** `model.ElicitationSchema [ZERO]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 91610.0
+- **Functions:** 88/91 matched (target 123)
+- **Missing functions:** `from_type`, `default_untitled_multi_select`, `test_schema_inference_for_enum_fields`
+- **Types:** 20/25 matched (target 42)
+- **Missing types:** `SingleSelect`, `MultiSelect`, `TitledEnum`, `UntitledEnum`, `UserInfo`
+- **Tests:** 24/26 matched
+
+### 6. model.meta
 
 - **Target:** `model.Meta`
 - **Similarity:** 0.34
@@ -111,7 +97,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/6 matched (target 5)
 - **Missing types:** `Target`
 
-### 8. common.client_side_sse
+### 7. common.client_side_sse
 
 - **Target:** `common.ClientSideSse`
 - **Similarity:** 0.51
@@ -122,7 +108,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 7/10 matched (target 14)
 - **Missing types:** `Error`, `Future`, `Item`
 
-### 9. common.server_side_http
+### 8. common.server_side_http
 
 - **Target:** `common.ServerSideHttp`
 - **Similarity:** 0.29
@@ -133,7 +119,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `BoxResponse`, `Output`
 
-### 10. model.annotated
+### 9. model.annotated
 
 - **Target:** `model.Annotated`
 - **Similarity:** 0.67
@@ -144,31 +130,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/5 matched (target 3)
 - **Missing types:** `Target`, `Sealed`
 
-### 11. model.resource
-
-- **Target:** `model.Resource`
-- **Similarity:** 0.19
-- **Dependents:** 0
-- **Priority Score:** 41108.1
-- **Functions:** 2/6 matched (target 4)
-- **Missing functions:** `test_resource_serialization`, `test_resource_contents_serialization`, `test_resource_template_with_icons`, `test_resource_template_without_icons`
-- **Types:** 5/5 matched (target 7)
-- **Missing types:** _none_
-- **Tests:** 0/4 matched
-
-### 12. model.prompt
-
-- **Target:** `model.Prompt`
-- **Similarity:** 0.61
-- **Dependents:** 0
-- **Priority Score:** 31603.9
-- **Functions:** 8/11 matched (target 12)
-- **Missing functions:** `test_prompt_message_image_serialization`, `test_prompt_message_resource_link_serialization`, `test_prompt_message_content_resource_link_deserialization`
-- **Types:** 5/5 matched (target 10)
-- **Missing types:** _none_
-- **Tests:** 0/3 matched
-
-### 13. model.capabilities
+### 10. model.capabilities
 
 - **Target:** `model.Capabilities`
 - **Similarity:** 0.58
@@ -180,7 +142,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 8/8 matched
 
-### 14. model.content
+### 11. model.content
 
 - **Target:** `model.Content`
 - **Similarity:** 0.74
@@ -192,7 +154,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 4/4 matched
 
-### 15. model.tool
+### 12. model.tool
 
 - **Target:** `model.Tool`
 - **Similarity:** 0.68
@@ -203,7 +165,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/4 matched
 - **Missing types:** _none_
 
-### 16. server.tool_name_validation
+### 13. model.prompt
+
+- **Target:** `model.Prompt`
+- **Similarity:** 0.81
+- **Dependents:** 0
+- **Priority Score:** 1601.9
+- **Functions:** 11/11 matched (target 15)
+- **Missing functions:** _none_
+- **Types:** 5/5 matched (target 11)
+- **Missing types:** _none_
+- **Tests:** 3/3 matched
+
+### 14. server.tool_name_validation
 
 - **Target:** `server.ToolNameValidation`
 - **Similarity:** 0.83
@@ -215,7 +189,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 11/11 matched
 
-### 17. model.task
+### 15. model.resource
+
+- **Target:** `model.Resource`
+- **Similarity:** 0.59
+- **Dependents:** 0
+- **Priority Score:** 1104.1
+- **Functions:** 6/6 matched (target 8)
+- **Missing functions:** _none_
+- **Types:** 5/5 matched (target 8)
+- **Missing types:** _none_
+- **Tests:** 4/4 matched
+
+### 16. model.task
 
 - **Target:** `model.Task`
 - **Similarity:** 1.00
@@ -226,7 +212,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/5 matched
 - **Missing types:** _none_
 
-### 18. transport.io
+### 17. transport.io
 
 - **Target:** `transport.Io`
 - **Similarity:** 0.47
@@ -237,21 +223,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 
-### 19. server.resource
-
-- **Target:** `model.ResourceTest [ZERO] [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10.0
-- **Functions:** 0/0 matched (target 4)
-- **Missing functions:** _none_
-- **Types:** 0/0 matched (target 1)
-- **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only by basename: `model/resource.rs` vs expected `handler/server/resource.rs`
-- **Proposed provenance header:** `// port-lint: source handler/server/resource.rs` (current: `// port-lint: source model/resource.rs`)
-- **Lint issues:** 1
-
-### 20. transport.common
+### 18. transport.common
 
 - **Target:** `server.CommonTest [ZERO] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
@@ -265,7 +237,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source transport/common.rs` (current: `// port-lint: source handler/server/common.rs`)
 - **Lint issues:** 1
 
-### 21. common.http_header
+### 19. common.http_header
 
 - **Target:** `common.HttpHeader`
 - **Similarity:** 1.00
