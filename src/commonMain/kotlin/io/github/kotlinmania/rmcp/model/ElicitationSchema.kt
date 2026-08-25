@@ -3,12 +3,24 @@
 
 package io.github.kotlinmania.rmcp.model
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonEncoder
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 /**
  * Type-safe schema definitions for MCP elicitation requests.
@@ -54,7 +66,7 @@ data object ArrayTypeConst : ConstString {
  *
  * Put enum as the first variant to avoid ambiguity during deserialization.
  */
-@Serializable
+@Serializable(with = PrimitiveSchemaSerializer::class)
 sealed class PrimitiveSchema {
     /**
      * Enum property, explicit enum schema.
@@ -95,6 +107,52 @@ sealed class PrimitiveSchema {
     data class BooleanVariant(
         val value: BooleanSchema,
     ) : PrimitiveSchema()
+}
+
+object PrimitiveSchemaSerializer : KSerializer<PrimitiveSchema> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("PrimitiveSchema")
+
+    override fun serialize(encoder: Encoder, value: PrimitiveSchema) {
+        val jsonEncoder = encoder as? JsonEncoder
+            ?: throw SerializationException("PrimitiveSchema can only be serialized as JSON")
+        val json = jsonEncoder.json
+        val element = when (value) {
+            is PrimitiveSchema.EnumVariant -> json.encodeToJsonElement(EnumSchemaSerializer, value.value)
+            is PrimitiveSchema.StringVariant -> json.encodeToJsonElement(StringSchema.serializer(), value.value)
+            is PrimitiveSchema.NumberVariant -> json.encodeToJsonElement(NumberSchema.serializer(), value.value)
+            is PrimitiveSchema.IntegerVariant -> json.encodeToJsonElement(IntegerSchema.serializer(), value.value)
+            is PrimitiveSchema.BooleanVariant -> json.encodeToJsonElement(BooleanSchema.serializer(), value.value)
+        }
+        jsonEncoder.encodeJsonElement(element)
+    }
+
+    override fun deserialize(decoder: Decoder): PrimitiveSchema {
+        val jsonDecoder = decoder as? JsonDecoder
+            ?: throw SerializationException("PrimitiveSchema can only be decoded from JSON")
+        val element = jsonDecoder.decodeJsonElement()
+        val obj = element.jsonObject
+        val json = jsonDecoder.json
+        val type = obj["type"]?.jsonPrimitive?.contentOrNull
+
+        // Enum takes precedence when "enum", "oneOf", "enumNames", "enum_names", or type == "array"
+        if (obj.containsKey("enum") || obj.containsKey("oneOf") || obj.containsKey("enumNames") || obj.containsKey("enum_names") || type == "array") {
+            return PrimitiveSchema.EnumVariant(json.decodeFromJsonElement(EnumSchemaSerializer, element))
+        }
+
+        return when (type) {
+            "string" -> PrimitiveSchema.StringVariant(json.decodeFromJsonElement(StringSchema.serializer(), element))
+            "number" -> PrimitiveSchema.NumberVariant(json.decodeFromJsonElement(NumberSchema.serializer(), element))
+            "integer" -> PrimitiveSchema.IntegerVariant(json.decodeFromJsonElement(IntegerSchema.serializer(), element))
+            "boolean" -> PrimitiveSchema.BooleanVariant(json.decodeFromJsonElement(BooleanSchema.serializer(), element))
+            else -> {
+                try {
+                    PrimitiveSchema.StringVariant(json.decodeFromJsonElement(StringSchema.serializer(), element))
+                } catch (_: Exception) {
+                    PrimitiveSchema.EnumVariant(json.decodeFromJsonElement(EnumSchemaSerializer, element))
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -522,7 +580,7 @@ data class TitledSingleSelectEnumSchema(
 /**
  * Combined single-select enum schema.
  */
-@Serializable
+@Serializable(with = SingleSelectEnumSchemaSerializer::class)
 sealed class SingleSelectEnumSchema {
     @Serializable
     data class Untitled(
@@ -533,6 +591,34 @@ sealed class SingleSelectEnumSchema {
     data class Titled(
         val value: TitledSingleSelectEnumSchema,
     ) : SingleSelectEnumSchema()
+}
+
+object SingleSelectEnumSchemaSerializer : KSerializer<SingleSelectEnumSchema> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("SingleSelectEnumSchema")
+
+    override fun serialize(encoder: Encoder, value: SingleSelectEnumSchema) {
+        val jsonEncoder = encoder as? JsonEncoder
+            ?: throw SerializationException("SingleSelectEnumSchema can only be serialized as JSON")
+        val json = jsonEncoder.json
+        val element = when (value) {
+            is SingleSelectEnumSchema.Untitled -> json.encodeToJsonElement(UntitledSingleSelectEnumSchema.serializer(), value.value)
+            is SingleSelectEnumSchema.Titled -> json.encodeToJsonElement(TitledSingleSelectEnumSchema.serializer(), value.value)
+        }
+        jsonEncoder.encodeJsonElement(element)
+    }
+
+    override fun deserialize(decoder: Decoder): SingleSelectEnumSchema {
+        val jsonDecoder = decoder as? JsonDecoder
+            ?: throw SerializationException("SingleSelectEnumSchema can only be decoded from JSON")
+        val element = jsonDecoder.decodeJsonElement()
+        val obj = element.jsonObject
+        val json = jsonDecoder.json
+        return if (obj.containsKey("oneOf")) {
+            SingleSelectEnumSchema.Titled(json.decodeFromJsonElement(TitledSingleSelectEnumSchema.serializer(), element))
+        } else {
+            SingleSelectEnumSchema.Untitled(json.decodeFromJsonElement(UntitledSingleSelectEnumSchema.serializer(), element))
+        }
+    }
 }
 
 /**
@@ -594,7 +680,7 @@ data class TitledMultiSelectEnumSchema(
 /**
  * Multi-select enum options.
  */
-@Serializable
+@Serializable(with = MultiSelectEnumSchemaSerializer::class)
 sealed class MultiSelectEnumSchema {
     @Serializable
     data class Untitled(
@@ -607,12 +693,41 @@ sealed class MultiSelectEnumSchema {
     ) : MultiSelectEnumSchema()
 }
 
+object MultiSelectEnumSchemaSerializer : KSerializer<MultiSelectEnumSchema> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("MultiSelectEnumSchema")
+
+    override fun serialize(encoder: Encoder, value: MultiSelectEnumSchema) {
+        val jsonEncoder = encoder as? JsonEncoder
+            ?: throw SerializationException("MultiSelectEnumSchema can only be serialized as JSON")
+        val json = jsonEncoder.json
+        val element = when (value) {
+            is MultiSelectEnumSchema.Untitled -> json.encodeToJsonElement(UntitledMultiSelectEnumSchema.serializer(), value.value)
+            is MultiSelectEnumSchema.Titled -> json.encodeToJsonElement(TitledMultiSelectEnumSchema.serializer(), value.value)
+        }
+        jsonEncoder.encodeJsonElement(element)
+    }
+
+    override fun deserialize(decoder: Decoder): MultiSelectEnumSchema {
+        val jsonDecoder = decoder as? JsonDecoder
+            ?: throw SerializationException("MultiSelectEnumSchema can only be decoded from JSON")
+        val element = jsonDecoder.decodeJsonElement()
+        val obj = element.jsonObject
+        val json = jsonDecoder.json
+        val itemsObj = obj["items"]?.jsonObject
+        return if (itemsObj?.containsKey("anyOf") == true) {
+            MultiSelectEnumSchema.Titled(json.decodeFromJsonElement(TitledMultiSelectEnumSchema.serializer(), element))
+        } else {
+            MultiSelectEnumSchema.Untitled(json.decodeFromJsonElement(UntitledMultiSelectEnumSchema.serializer(), element))
+        }
+    }
+}
+
 /**
  * Compliant with the MCP 2025-06-18 specification for elicitation schemas.
  * Enums must have string type for values and can optionally include
  * human-readable names.
  */
-@Serializable
+@Serializable(with = EnumSchemaSerializer::class)
 sealed class EnumSchema {
     @Serializable
     data class Single(
@@ -635,6 +750,39 @@ sealed class EnumSchema {
          */
         fun builder(values: List<kotlin.String>): EnumSchemaBuilder =
             EnumSchemaBuilder.new(values)
+    }
+}
+
+object EnumSchemaSerializer : KSerializer<EnumSchema> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("EnumSchema")
+
+    override fun serialize(encoder: Encoder, value: EnumSchema) {
+        val jsonEncoder = encoder as? JsonEncoder
+            ?: throw SerializationException("EnumSchema can only be serialized as JSON")
+        val json = jsonEncoder.json
+        val element = when (value) {
+            is EnumSchema.Single -> json.encodeToJsonElement(SingleSelectEnumSchemaSerializer, value.value)
+            is EnumSchema.Multi -> json.encodeToJsonElement(MultiSelectEnumSchemaSerializer, value.value)
+            is EnumSchema.Legacy -> json.encodeToJsonElement(LegacyEnumSchema.serializer(), value.value)
+        }
+        jsonEncoder.encodeJsonElement(element)
+    }
+
+    override fun deserialize(decoder: Decoder): EnumSchema {
+        val jsonDecoder = decoder as? JsonDecoder
+            ?: throw SerializationException("EnumSchema can only be decoded from JSON")
+        val element = jsonDecoder.decodeJsonElement()
+        val obj = element.jsonObject
+        val json = jsonDecoder.json
+        val type = obj["type"]?.jsonPrimitive?.contentOrNull
+
+        return if (type == "array") {
+            EnumSchema.Multi(json.decodeFromJsonElement(MultiSelectEnumSchemaSerializer, element))
+        } else if (obj.containsKey("enumNames") || obj.containsKey("enum_names")) {
+            EnumSchema.Legacy(json.decodeFromJsonElement(LegacyEnumSchema.serializer(), element))
+        } else {
+            EnumSchema.Single(json.decodeFromJsonElement(SingleSelectEnumSchemaSerializer, element))
+        }
     }
 }
 
