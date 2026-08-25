@@ -4,10 +4,10 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 21/94 (22.3%)
-- **Function parity:** 268/1181 matched (target 492) — 22.7%
-- **Class/type parity:** 218/537 matched (target 341) — 40.6%
-- **Combined symbol parity:** 486/1718 matched (target 833) — 28.3%
+- **Files Present:** 21/56 (37.5%)
+- **Function parity:** 268/863 matched (target 494) — 31.1%
+- **Class/type parity:** 218/462 matched (target 342) — 47.2%
+- **Combined symbol parity:** 486/1325 matched (target 836) — 36.7%
 - **Average inline-code cosine:** 0.46 (function body across 21 matched files)
 - **Average documentation cosine:** 0.69 (doc text across 21 matched files)
 - **Cheat-zeroed Files:** 2
@@ -21,9 +21,7 @@ No incomplete high-dependency files detected.
 
 Critical missing files (>10 dependencies):
 
-1. **wrapper.json** (13 deps)
-   - Path: `src/handler/server/wrapper/json.rs`
-   - Essential for 13 other files
+No missing high-value files detected.
 
 ## Detailed Work Items
 
@@ -31,21 +29,18 @@ Every matched file is listed below with function and type symbol parity.
 
 ### 1. error
 
-- **Target:** `rmcp.Error [PROVENANCE-FALLBACK]`
+- **Target:** `rmcp.Error`
 - **Similarity:** 0.45
 - **Dependents:** 8
 - **Priority Score:** 8000405.5
-- **Functions:** 2/2 matched
+- **Functions:** 2/2 matched (target 4)
 - **Missing functions:** _none_
-- **Types:** 2/2 matched (target 9)
+- **Types:** 2/2 matched (target 10)
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `error.rs` vs expected `error.rs`
-- **Proposed provenance header:** `// port-lint: source error.rs` (current: `// port-lint: source error.rs`)
-- **Lint issues:** 1
 
 ### 2. model.elicitation_schema
 
-- **Target:** `model.ElicitationSchema [PROVENANCE-FALLBACK]`
+- **Target:** `model.ElicitationSchema`
 - **Similarity:** 0.52
 - **Dependents:** 0
 - **Priority Score:** 331604.8
@@ -54,13 +49,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 20/25 matched (target 37)
 - **Missing types:** `SingleSelect`, `MultiSelect`, `TitledEnum`, `UntitledEnum`, `UserInfo`
 - **Tests:** 0/26 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/elicitation_schema.rs` vs expected `model/elicitation_schema.rs`
-- **Proposed provenance header:** `// port-lint: source model/elicitation_schema.rs` (current: `// port-lint: source model/elicitation_schema.rs`)
-- **Lint issues:** 1
 
 ### 3. model
 
-- **Target:** `model.Model [PROVENANCE-FALLBACK]`
+- **Target:** `model.Model`
 - **Similarity:** 0.42
 - **Dependents:** 0
 - **Priority Score:** 302005.8
@@ -69,9 +61,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 122/125 matched (target 187)
 - **Missing types:** `Error`, `CreateElicitationRequestParamDeserializeHelper`, `CallToolResultHelper`
 - **Tests:** 0/16 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model.rs` vs expected `model.rs`
-- **Proposed provenance header:** `// port-lint: source model.rs` (current: `// port-lint: source model.rs`)
-- **Lint issues:** 1
 
 ### 4. server.prompt
 
@@ -89,7 +78,7 @@ Every matched file is listed below with function and type symbol parity.
 
 ### 5. model.extension
 
-- **Target:** `model.Extension [PROVENANCE-FALLBACK]`
+- **Target:** `model.Extension`
 - **Similarity:** 0.24
 - **Dependents:** 0
 - **Priority Score:** 122707.6
@@ -98,15 +87,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `AnyMap`, `IdHasher`, `AnyClone`
 - **Tests:** 1/1 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/extension.rs` vs expected `model/extension.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/extension.rs` vs expected `model/extension.rs`
-- **Proposed provenance header:** `// port-lint: source model/extension.rs` (current: `// port-lint: source model/extension.rs`)
-- **Proposed provenance header:** `// port-lint: source model/extension.rs` (current: `// port-lint: source model/extension.rs`)
-- **Lint issues:** 2
 
 ### 6. server.common
 
-- **Target:** `server.Common [PROVENANCE-FALLBACK]`
+- **Target:** `server.Common`
 - **Similarity:** 0.04
 - **Dependents:** 0
 - **Priority Score:** 121809.6
@@ -115,13 +99,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/6 matched (target 4)
 - **Missing types:** `TestObject`, `AnotherTestObject`
 - **Tests:** 0/9 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `handler/server/common.rs` vs expected `handler/server/common.rs`
-- **Proposed provenance header:** `// port-lint: source handler/server/common.rs` (current: `// port-lint: source handler/server/common.rs`)
-- **Lint issues:** 1
 
 ### 7. model.meta
 
-- **Target:** `model.Meta [PROVENANCE-FALLBACK]`
+- **Target:** `model.Meta`
 - **Similarity:** 0.34
 - **Dependents:** 0
 - **Priority Score:** 72206.6
@@ -129,13 +110,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `extensions`, `get_meta_mut`, `get_meta`, `deref`, `deref_mut`, `insert_extension`
 - **Types:** 5/6 matched (target 5)
 - **Missing types:** `Target`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/meta.rs` vs expected `model/meta.rs`
-- **Proposed provenance header:** `// port-lint: source model/meta.rs` (current: `// port-lint: source model/meta.rs`)
-- **Lint issues:** 1
 
 ### 8. common.client_side_sse
 
-- **Target:** `common.ClientSideSse [PROVENANCE-FALLBACK]`
+- **Target:** `common.ClientSideSse`
 - **Similarity:** 0.51
 - **Dependents:** 0
 - **Priority Score:** 51804.9
@@ -143,13 +121,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `default`, `poll_next`
 - **Types:** 7/10 matched (target 14)
 - **Missing types:** `Error`, `Future`, `Item`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `transport/common/client_side_sse.rs` vs expected `transport/common/client_side_sse.rs`
-- **Proposed provenance header:** `// port-lint: source transport/common/client_side_sse.rs` (current: `// port-lint: source transport/common/client_side_sse.rs`)
-- **Lint issues:** 1
 
 ### 9. common.server_side_http
 
-- **Target:** `common.ServerSideHttp [PROVENANCE-FALLBACK]`
+- **Target:** `common.ServerSideHttp`
 - **Similarity:** 0.29
 - **Dependents:** 0
 - **Priority Score:** 51307.1
@@ -157,13 +132,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `poll`, `from_duration`, `reset`
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `BoxResponse`, `Output`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `transport/common/server_side_http.rs` vs expected `transport/common/server_side_http.rs`
-- **Proposed provenance header:** `// port-lint: source transport/common/server_side_http.rs` (current: `// port-lint: source transport/common/server_side_http.rs`)
-- **Lint issues:** 1
 
 ### 10. model.annotated
 
-- **Target:** `model.Annotated [PROVENANCE-FALLBACK]`
+- **Target:** `model.Annotated`
 - **Similarity:** 0.67
 - **Dependents:** 0
 - **Priority Score:** 42003.3
@@ -171,13 +143,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `deref`, `deref_mut`
 - **Types:** 3/5 matched (target 3)
 - **Missing types:** `Target`, `Sealed`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/annotated.rs` vs expected `model/annotated.rs`
-- **Proposed provenance header:** `// port-lint: source model/annotated.rs` (current: `// port-lint: source model/annotated.rs`)
-- **Lint issues:** 1
 
 ### 11. model.resource
 
-- **Target:** `model.Resource [PROVENANCE-FALLBACK]`
+- **Target:** `model.Resource`
 - **Similarity:** 0.19
 - **Dependents:** 0
 - **Priority Score:** 41108.1
@@ -186,13 +155,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/5 matched (target 7)
 - **Missing types:** _none_
 - **Tests:** 0/4 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/resource.rs` vs expected `model/resource.rs`
-- **Proposed provenance header:** `// port-lint: source model/resource.rs` (current: `// port-lint: source model/resource.rs`)
-- **Lint issues:** 1
 
 ### 12. model.prompt
 
-- **Target:** `model.Prompt [PROVENANCE-FALLBACK]`
+- **Target:** `model.Prompt`
 - **Similarity:** 0.61
 - **Dependents:** 0
 - **Priority Score:** 31603.9
@@ -201,13 +167,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/5 matched (target 10)
 - **Missing types:** _none_
 - **Tests:** 0/3 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/prompt.rs` vs expected `model/prompt.rs`
-- **Proposed provenance header:** `// port-lint: source model/prompt.rs` (current: `// port-lint: source model/prompt.rs`)
-- **Lint issues:** 1
 
 ### 13. model.capabilities
 
-- **Target:** `model.Capabilities [PROVENANCE-FALLBACK]`
+- **Target:** `model.Capabilities`
 - **Similarity:** 0.58
 - **Dependents:** 0
 - **Priority Score:** 4004.2
@@ -216,15 +179,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 17/17 matched (target 20)
 - **Missing types:** _none_
 - **Tests:** 8/8 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/capabilities.rs` vs expected `model/capabilities.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/capabilities.rs` vs expected `model/capabilities.rs`
-- **Proposed provenance header:** `// port-lint: source model/capabilities.rs` (current: `// port-lint: source model/capabilities.rs`)
-- **Proposed provenance header:** `// port-lint: source model/capabilities.rs` (current: `// port-lint: source model/capabilities.rs`)
-- **Lint issues:** 2
 
 ### 14. model.content
 
-- **Target:** `model.Content [PROVENANCE-FALLBACK]`
+- **Target:** `model.Content`
 - **Similarity:** 0.74
 - **Dependents:** 0
 - **Priority Score:** 3202.6
@@ -233,15 +191,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 14/14 matched (target 21)
 - **Missing types:** _none_
 - **Tests:** 4/4 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/content.rs` vs expected `model/content.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/content.rs` vs expected `model/content.rs`
-- **Proposed provenance header:** `// port-lint: source model/content.rs` (current: `// port-lint: source model/content.rs`)
-- **Proposed provenance header:** `// port-lint: source model/content.rs` (current: `// port-lint: source model/content.rs`)
-- **Lint issues:** 2
 
 ### 15. model.tool
 
-- **Target:** `model.Tool [PROVENANCE-FALLBACK]`
+- **Target:** `model.Tool`
 - **Similarity:** 0.68
 - **Dependents:** 0
 - **Priority Score:** 1903.2
@@ -249,13 +202,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 4/4 matched
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/tool.rs` vs expected `model/tool.rs`
-- **Proposed provenance header:** `// port-lint: source model/tool.rs` (current: `// port-lint: source model/tool.rs`)
-- **Lint issues:** 1
 
 ### 16. server.tool_name_validation
 
-- **Target:** `server.ToolNameValidation [PROVENANCE-FALLBACK]`
+- **Target:** `server.ToolNameValidation`
 - **Similarity:** 0.83
 - **Dependents:** 0
 - **Priority Score:** 1601.7
@@ -264,15 +214,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 2)
 - **Missing types:** _none_
 - **Tests:** 11/11 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `handler/server/tool_name_validation.rs` vs expected `handler/server/tool_name_validation.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `handler/server/tool_name_validation.rs` vs expected `handler/server/tool_name_validation.rs`
-- **Proposed provenance header:** `// port-lint: source handler/server/tool_name_validation.rs` (current: `// port-lint: source handler/server/tool_name_validation.rs`)
-- **Proposed provenance header:** `// port-lint: source handler/server/tool_name_validation.rs` (current: `// port-lint: source handler/server/tool_name_validation.rs`)
-- **Lint issues:** 2
 
 ### 17. model.task
 
-- **Target:** `model.Task [PROVENANCE-FALLBACK]`
+- **Target:** `model.Task`
 - **Similarity:** 1.00
 - **Dependents:** 0
 - **Priority Score:** 500.0
@@ -280,13 +225,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 5/5 matched
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `model/task.rs` vs expected `model/task.rs`
-- **Proposed provenance header:** `// port-lint: source model/task.rs` (current: `// port-lint: source model/task.rs`)
-- **Lint issues:** 1
 
 ### 18. transport.io
 
-- **Target:** `transport.Io [PROVENANCE-FALLBACK]`
+- **Target:** `transport.Io`
 - **Similarity:** 0.47
 - **Dependents:** 0
 - **Priority Score:** 105.3
@@ -294,9 +236,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `transport/io.rs` vs expected `transport/io.rs`
-- **Proposed provenance header:** `// port-lint: source transport/io.rs` (current: `// port-lint: source transport/io.rs`)
-- **Lint issues:** 1
 
 ### 19. server.resource
 
@@ -328,7 +267,7 @@ Every matched file is listed below with function and type symbol parity.
 
 ### 21. common.http_header
 
-- **Target:** `common.HttpHeader [PROVENANCE-FALLBACK]`
+- **Target:** `common.HttpHeader`
 - **Similarity:** 1.00
 - **Dependents:** 0
 - **Priority Score:** 0.0
@@ -336,9 +275,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `transport/common/http_header.rs` vs expected `transport/common/http_header.rs`
-- **Proposed provenance header:** `// port-lint: source transport/common/http_header.rs` (current: `// port-lint: source transport/common/http_header.rs`)
-- **Lint issues:** 1
 
 ## Success Criteria
 
@@ -360,6 +296,5 @@ do not treat them as the next implementation target by default.
 
 | Source | Expected target | Deps | Source path | Expected path |
 |--------|-----------------|------|-------------|---------------|
-| `lib` | `Lib` | 0 | `src/lib.rs` | `Lib.kt` |
-| `common.mod` | `tests.common.Mod` | 0 | `tests/common/mod.rs` | `tests/common/Mod.kt` |
+| `lib` | `Lib` | 0 | `lib.rs` | `Lib.kt` |
 
