@@ -911,20 +911,17 @@ tasks.register("hostTests") {
     )
 }
 
-tasks.matching { it.name.endsWith("GenerateSPMPackage") }.configureEach {
+// Patch generated SPM Package.swift to include minimum macOS platform for Swift Concurrency
+tasks.matching { it.name.contains("GenerateSPMPackage") }.configureEach {
     doLast {
-        val spmPackageDir =
-            layout.buildDirectory
-                .dir("SPMPackage")
-                .get()
-                .asFile
-        if (spmPackageDir.exists()) {
-            spmPackageDir.walkTopDown().filter { it.name == "Package.swift" }.forEach { packageSwift ->
-                val text = packageSwift.readText()
+        val spmDir = layout.buildDirectory.dir("SPMPackage").orNull?.asFile
+        if (spmDir != null && spmDir.exists()) {
+            spmDir.walkTopDown().filter { it.name == "Package.swift" }.forEach { file ->
+                val text = file.readText()
                 if (!text.contains("platforms:")) {
-                    packageSwift.writeText(
+                    file.writeText(
                         text.replaceFirst(
-                            Regex("""(Package\(\s*name:\s*"[^"]*",)"""),
+                            Regex("""(let package = Package\s*\(\s*name:\s*"[^"]*",)"""),
                             "$1\n    platforms: [.macOS(.v14)],",
                         ),
                     )
@@ -943,30 +940,21 @@ tasks.register("swiftExportSmokeTest") {
     group = "verification"
     description = "Builds the Swift Export SPM package and runs swift test against it."
     outputs.upToDateWhen { false }
-    mustRunAfter("hostTests")
 
     doLast {
         val execOperations = serviceOf<ExecOperations>()
-        val swiftBuildDirFile =
+        val swiftBuildDir =
             layout.buildDirectory
                 .dir("swift-test")
                 .get()
                 .asFile
-        swiftBuildDirFile.deleteRecursively()
-        swiftBuildDirFile.mkdirs()
-        val swiftBuildDir = swiftBuildDirFile.absolutePath
-        layout.buildDirectory
-            .dir("bin/macosArm64/SwiftExportBinaryDebugStatic")
-            .get()
-            .asFile
-            .mkdirs()
+                .absolutePath
         execOperations
             .exec {
                 workingDir = projectDir
                 commandLine(
                     "./gradlew",
                     "embedSwiftExportForXcode",
-                    "--max-workers=1",
                     "--no-configuration-cache",
                     "--no-daemon",
                     "--console=plain",
@@ -984,23 +972,6 @@ tasks.register("swiftExportSmokeTest") {
                     ),
                 )
             }.assertNormalExitValue()
-
-        val generatedPackageSwift =
-            layout.buildDirectory
-                .file("SPMPackage/macosArm64/Debug/Package.swift")
-                .get()
-                .asFile
-        if (generatedPackageSwift.exists()) {
-            val text = generatedPackageSwift.readText()
-            if (!text.contains("platforms:")) {
-                generatedPackageSwift.writeText(
-                    text.replaceFirst(
-                        Regex("""(Package\(\s*name:\s*"[^"]*",)"""),
-                        "$1\n    platforms: [.macOS(.v14)],",
-                    ),
-                )
-            }
-        }
 
         execOperations
             .exec {
