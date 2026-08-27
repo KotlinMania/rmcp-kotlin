@@ -4,10 +4,10 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 18/56 (32.1%)
-- **Function parity:** 323/866 matched (target 563) — 37.3%
-- **Class/type parity:** 220/462 matched (target 359) — 47.6%
-- **Combined symbol parity:** 543/1328 matched (target 922) — 40.9%
+- **Files Present:** 18/94 (19.1%)
+- **Function parity:** 323/1184 matched (target 563) — 27.3%
+- **Class/type parity:** 220/537 matched (target 359) — 41.0%
+- **Combined symbol parity:** 543/1721 matched (target 922) — 31.6%
 - **Average inline-code cosine:** 0.56 (function body across 18 matched files)
 - **Average documentation cosine:** 0.80 (doc text across 18 matched files)
 - **Cheat-zeroed Files:** 1
@@ -21,13 +21,15 @@ No incomplete high-dependency files detected.
 
 Critical missing files (>10 dependencies):
 
-No missing high-value files detected.
+1. **wrapper.json** (13 deps)
+   - Path: `rmcp/src/handler/server/wrapper/json.rs`
+   - Essential for 13 other files
 
 ## Detailed Work Items
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. error
+### 1. rmcp.error
 
 - **Target:** `rmcp.Error`
 - **Similarity:** 0.45
@@ -38,7 +40,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 10)
 - **Missing types:** _none_
 
-### 2. model
+### 2. rmcp.model
 
 - **Target:** `model.Model`
 - **Similarity:** 0.48

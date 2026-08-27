@@ -1,4 +1,4 @@
-// port-lint: source handler/server/tool_name_validation.rs
+// port-lint: source rmcp/src/handler/server/tool_name_validation.rs
 package io.github.kotlinmania.rmcp.handler.server
 
 /**

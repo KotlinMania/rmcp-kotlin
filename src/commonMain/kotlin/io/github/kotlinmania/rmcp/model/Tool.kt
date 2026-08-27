@@ -1,4 +1,4 @@
-// port-lint: source model/tool.rs
+// port-lint: source rmcp/src/model/tool.rs
 package io.github.kotlinmania.rmcp.model
 
 import io.github.kotlinmania.rmcp.handler.server.schemaForOutput

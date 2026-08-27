@@ -1,4 +1,4 @@
-// port-lint: tests model/extension.rs
+// port-lint: tests rmcp/src/model/extension.rs
 package io.github.kotlinmania.rmcp.model
 
 import kotlin.test.Test

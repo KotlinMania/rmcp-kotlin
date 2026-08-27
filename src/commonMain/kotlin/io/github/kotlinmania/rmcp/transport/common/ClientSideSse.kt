@@ -1,4 +1,4 @@
-// port-lint: source transport/common/client_side_sse.rs
+// port-lint: source rmcp/src/transport/common/client_side_sse.rs
 package io.github.kotlinmania.rmcp.transport.common
 
 import io.github.kotlinmania.rmcp.model.ServerJsonRpcMessage
