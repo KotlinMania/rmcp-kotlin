@@ -1,4 +1,4 @@
-// port-lint: source model/annotated.rs
+// port-lint: source rmcp/src/model/annotated.rs
 @file:OptIn(kotlin.time.ExperimentalTime::class)
 
 package io.github.kotlinmania.rmcp.model

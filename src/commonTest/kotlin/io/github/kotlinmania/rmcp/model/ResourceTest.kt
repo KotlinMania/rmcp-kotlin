@@ -1,4 +1,4 @@
-// port-lint: tests model/resource.rs
+// port-lint: tests rmcp/src/model/resource.rs
 @file:OptIn(ExperimentalSerializationApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rmcp.model

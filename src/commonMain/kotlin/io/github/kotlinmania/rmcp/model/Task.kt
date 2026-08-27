@@ -1,4 +1,4 @@
-// port-lint: source model/task.rs
+// port-lint: source rmcp/src/model/task.rs
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rmcp.model
