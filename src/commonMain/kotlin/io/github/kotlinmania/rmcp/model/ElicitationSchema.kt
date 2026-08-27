@@ -113,22 +113,25 @@ object PrimitiveSchemaSerializer : KSerializer<PrimitiveSchema> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("PrimitiveSchema")
 
     override fun serialize(encoder: Encoder, value: PrimitiveSchema) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("PrimitiveSchema can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("PrimitiveSchema can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is PrimitiveSchema.EnumVariant -> json.encodeToJsonElement(EnumSchemaSerializer, value.value)
-            is PrimitiveSchema.StringVariant -> json.encodeToJsonElement(StringSchema.serializer(), value.value)
-            is PrimitiveSchema.NumberVariant -> json.encodeToJsonElement(NumberSchema.serializer(), value.value)
-            is PrimitiveSchema.IntegerVariant -> json.encodeToJsonElement(IntegerSchema.serializer(), value.value)
-            is PrimitiveSchema.BooleanVariant -> json.encodeToJsonElement(BooleanSchema.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is PrimitiveSchema.EnumVariant -> json.encodeToJsonElement(EnumSchemaSerializer, value.value)
+                is PrimitiveSchema.StringVariant -> json.encodeToJsonElement(StringSchema.serializer(), value.value)
+                is PrimitiveSchema.NumberVariant -> json.encodeToJsonElement(NumberSchema.serializer(), value.value)
+                is PrimitiveSchema.IntegerVariant -> json.encodeToJsonElement(IntegerSchema.serializer(), value.value)
+                is PrimitiveSchema.BooleanVariant -> json.encodeToJsonElement(BooleanSchema.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): PrimitiveSchema {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("PrimitiveSchema can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("PrimitiveSchema can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val json = jsonDecoder.json
@@ -597,19 +600,22 @@ object SingleSelectEnumSchemaSerializer : KSerializer<SingleSelectEnumSchema> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("SingleSelectEnumSchema")
 
     override fun serialize(encoder: Encoder, value: SingleSelectEnumSchema) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("SingleSelectEnumSchema can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("SingleSelectEnumSchema can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is SingleSelectEnumSchema.Untitled -> json.encodeToJsonElement(UntitledSingleSelectEnumSchema.serializer(), value.value)
-            is SingleSelectEnumSchema.Titled -> json.encodeToJsonElement(TitledSingleSelectEnumSchema.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is SingleSelectEnumSchema.Untitled -> json.encodeToJsonElement(UntitledSingleSelectEnumSchema.serializer(), value.value)
+                is SingleSelectEnumSchema.Titled -> json.encodeToJsonElement(TitledSingleSelectEnumSchema.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): SingleSelectEnumSchema {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("SingleSelectEnumSchema can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("SingleSelectEnumSchema can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val json = jsonDecoder.json
@@ -697,19 +703,22 @@ object MultiSelectEnumSchemaSerializer : KSerializer<MultiSelectEnumSchema> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("MultiSelectEnumSchema")
 
     override fun serialize(encoder: Encoder, value: MultiSelectEnumSchema) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("MultiSelectEnumSchema can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("MultiSelectEnumSchema can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is MultiSelectEnumSchema.Untitled -> json.encodeToJsonElement(UntitledMultiSelectEnumSchema.serializer(), value.value)
-            is MultiSelectEnumSchema.Titled -> json.encodeToJsonElement(TitledMultiSelectEnumSchema.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is MultiSelectEnumSchema.Untitled -> json.encodeToJsonElement(UntitledMultiSelectEnumSchema.serializer(), value.value)
+                is MultiSelectEnumSchema.Titled -> json.encodeToJsonElement(TitledMultiSelectEnumSchema.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): MultiSelectEnumSchema {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("MultiSelectEnumSchema can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("MultiSelectEnumSchema can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val json = jsonDecoder.json
@@ -757,20 +766,23 @@ object EnumSchemaSerializer : KSerializer<EnumSchema> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("EnumSchema")
 
     override fun serialize(encoder: Encoder, value: EnumSchema) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("EnumSchema can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("EnumSchema can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is EnumSchema.Single -> json.encodeToJsonElement(SingleSelectEnumSchemaSerializer, value.value)
-            is EnumSchema.Multi -> json.encodeToJsonElement(MultiSelectEnumSchemaSerializer, value.value)
-            is EnumSchema.Legacy -> json.encodeToJsonElement(LegacyEnumSchema.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is EnumSchema.Single -> json.encodeToJsonElement(SingleSelectEnumSchemaSerializer, value.value)
+                is EnumSchema.Multi -> json.encodeToJsonElement(MultiSelectEnumSchemaSerializer, value.value)
+                is EnumSchema.Legacy -> json.encodeToJsonElement(LegacyEnumSchema.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): EnumSchema {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("EnumSchema can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("EnumSchema can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val json = jsonDecoder.json

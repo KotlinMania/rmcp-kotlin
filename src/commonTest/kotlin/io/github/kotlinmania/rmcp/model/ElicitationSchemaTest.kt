@@ -14,11 +14,12 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-private val elicitationTestJson = Json {
-    explicitNulls = false
-    ignoreUnknownKeys = true
-    encodeDefaults = true
-}
+private val elicitationTestJson =
+    Json {
+        explicitNulls = false
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
 
 class ElicitationSchemaTest {
     @Test
@@ -66,9 +67,11 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaUntitledSingleSelectSerialization() {
-        val schema = EnumSchema.builder(listOf("US", "UK"))
-            .description("Country code")
-            .build()
+        val schema =
+            EnumSchema
+                .builder(listOf("US", "UK"))
+                .description("Country code")
+                .build()
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
 
@@ -79,12 +82,16 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaUntitledMultiSelectSerialization() {
-        val schema = EnumSchema.builder(listOf("US", "UK"))
-            .multiselect()
-            .minItems(1uL).getOrThrow()
-            .maxItems(4uL).getOrThrow()
-            .description("Country code")
-            .build()
+        val schema =
+            EnumSchema
+                .builder(listOf("US", "UK"))
+                .multiselect()
+                .minItems(1uL)
+                .getOrThrow()
+                .maxItems(4uL)
+                .getOrThrow()
+                .description("Country code")
+                .build()
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
 
@@ -96,10 +103,13 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaTitledSingleSelectSerialization() {
-        val schema = EnumSchema.builder(listOf("US", "UK"))
-            .enumTitles(listOf("United States", "United Kingdom")).getOrThrow()
-            .description("Country code")
-            .build()
+        val schema =
+            EnumSchema
+                .builder(listOf("US", "UK"))
+                .enumTitles(listOf("United States", "United Kingdom"))
+                .getOrThrow()
+                .description("Country code")
+                .build()
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
 
@@ -109,15 +119,16 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaLegacySerialization() {
-        val schema = EnumSchema.Legacy(
-            LegacyEnumSchema(
-                type = StringTypeConst.value,
-                title = "Legacy Enum",
-                descriptionText = "A legacy enum schema",
-                values = listOf("A", "B"),
-                enumNames = listOf("Option A", "Option B"),
+        val schema =
+            EnumSchema.Legacy(
+                LegacyEnumSchema(
+                    type = StringTypeConst.value,
+                    title = "Legacy Enum",
+                    descriptionText = "A legacy enum schema",
+                    values = listOf("A", "B"),
+                    enumNames = listOf("Option A", "Option B"),
+                ),
             )
-        )
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
 
@@ -130,13 +141,18 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaTitledMultiSelectSerialization() {
-        val schema = EnumSchema.builder(listOf("US", "UK"))
-            .enumTitles(listOf("United States", "United Kingdom")).getOrThrow()
-            .multiselect()
-            .minItems(1uL).getOrThrow()
-            .maxItems(4uL).getOrThrow()
-            .description("Country code")
-            .build()
+        val schema =
+            EnumSchema
+                .builder(listOf("US", "UK"))
+                .enumTitles(listOf("United States", "United Kingdom"))
+                .getOrThrow()
+                .multiselect()
+                .minItems(1uL)
+                .getOrThrow()
+                .maxItems(4uL)
+                .getOrThrow()
+                .description("Country code")
+                .build()
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
 
@@ -159,10 +175,13 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaSingleSelectWithDefault() {
-        val schema = EnumSchema.builder(listOf("red", "green", "blue"))
-            .withDefault("green").getOrThrow()
-            .description("Favorite color")
-            .build()
+        val schema =
+            EnumSchema
+                .builder(listOf("red", "green", "blue"))
+                .withDefault("green")
+                .getOrThrow()
+                .description("Favorite color")
+                .build()
 
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
@@ -174,12 +193,17 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaMultiSelectWithDefault() {
-        val schema = EnumSchema.builder(listOf("red", "green", "blue"))
-            .multiselect()
-            .withDefault(listOf("red", "blue")).getOrThrow()
-            .minItems(1uL).getOrThrow()
-            .maxItems(3uL).getOrThrow()
-            .build()
+        val schema =
+            EnumSchema
+                .builder(listOf("red", "green", "blue"))
+                .multiselect()
+                .withDefault(listOf("red", "blue"))
+                .getOrThrow()
+                .minItems(1uL)
+                .getOrThrow()
+                .maxItems(3uL)
+                .getOrThrow()
+                .build()
 
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
@@ -192,8 +216,11 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaTransitionClearsDefaults() {
-        val builder = EnumSchema.builder(listOf("A", "B"))
-            .withDefault("A").getOrThrow()
+        val builder =
+            EnumSchema
+                .builder(listOf("A", "B"))
+                .withDefault("A")
+                .getOrThrow()
 
         val schema = builder.multiselect().build()
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
@@ -205,10 +232,14 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaMultiToSingleTransition() {
-        val builder = EnumSchema.builder(listOf("A", "B", "C"))
-            .multiselect()
-            .withDefault(listOf("A", "B")).getOrThrow()
-            .minItems(1uL).getOrThrow()
+        val builder =
+            EnumSchema
+                .builder(listOf("A", "B", "C"))
+                .multiselect()
+                .withDefault(listOf("A", "B"))
+                .getOrThrow()
+                .minItems(1uL)
+                .getOrThrow()
 
         val schema = builder.singleSelect().build()
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
@@ -229,19 +260,25 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaInvalidMultiDefault() {
-        val result = EnumSchema.builder(listOf("A", "B"))
-            .multiselect()
-            .withDefault(listOf("A", "C"))
+        val result =
+            EnumSchema
+                .builder(listOf("A", "B"))
+                .multiselect()
+                .withDefault(listOf("A", "C"))
         assertTrue(result.isFailure)
         assertEquals("One of the provided default values is not in enum values", result.exceptionOrNull()?.message)
     }
 
     @Test
     fun testEnumSchemaTitledWithDefault() {
-        val schema = EnumSchema.builder(listOf("US", "UK"))
-            .enumTitles(listOf("United States", "United Kingdom")).getOrThrow()
-            .withDefault("UK").getOrThrow()
-            .build()
+        val schema =
+            EnumSchema
+                .builder(listOf("US", "UK"))
+                .enumTitles(listOf("United States", "United Kingdom"))
+                .getOrThrow()
+                .withDefault("UK")
+                .getOrThrow()
+                .build()
 
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
@@ -252,10 +289,13 @@ class ElicitationSchemaTest {
 
     @Test
     fun testEnumSchemaUntitledAfterTitled() {
-        val schema = EnumSchema.builder(listOf("A", "B"))
-            .enumTitles(listOf("Option A", "Option B")).getOrThrow()
-            .untitled()
-            .build()
+        val schema =
+            EnumSchema
+                .builder(listOf("A", "B"))
+                .enumTitles(listOf("Option A", "Option B"))
+                .getOrThrow()
+                .untitled()
+                .build()
 
         val jsonStr = elicitationTestJson.encodeToString(EnumSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
@@ -267,11 +307,13 @@ class ElicitationSchemaTest {
 
     @Test
     fun testElicitationSchemaBuilderSimple() {
-        val schema = ElicitationSchema.builder()
-            .requiredEmail("email")
-            .optionalBool("newsletter", false)
-            .build()
-            .getOrThrow()
+        val schema =
+            ElicitationSchema
+                .builder()
+                .requiredEmail("email")
+                .optionalBool("newsletter", false)
+                .build()
+                .getOrThrow()
 
         assertEquals(2, schema.properties.size)
         assertTrue(schema.properties.containsKey("email"))
@@ -282,14 +324,16 @@ class ElicitationSchemaTest {
     @Test
     fun testElicitationSchemaBuilderComplex() {
         val enumSchema = EnumSchema.builder(listOf("US", "UK", "CA")).build()
-        val schema = ElicitationSchema.builder()
-            .requiredStringWith("name") { s -> s.length(1u, 100u) }
-            .requiredInteger("age", 0L, 150L)
-            .optionalBool("newsletter", false)
-            .requiredEnumSchema("country", enumSchema)
-            .description("User registration")
-            .build()
-            .getOrThrow()
+        val schema =
+            ElicitationSchema
+                .builder()
+                .requiredStringWith("name") { s -> s.length(1u, 100u) }
+                .requiredInteger("age", 0L, 150L)
+                .optionalBool("newsletter", false)
+                .requiredEnumSchema("country", enumSchema)
+                .description("User registration")
+                .build()
+                .getOrThrow()
 
         assertEquals(4, schema.properties.size)
         assertEquals(listOf("name", "age", "country"), schema.required)
@@ -298,10 +342,12 @@ class ElicitationSchemaTest {
 
     @Test
     fun testElicitationSchemaSerialization() {
-        val schema = ElicitationSchema.builder()
-            .requiredStringWith("name") { s -> s.length(1u, 100u) }
-            .build()
-            .getOrThrow()
+        val schema =
+            ElicitationSchema
+                .builder()
+                .requiredStringWith("name") { s -> s.length(1u, 100u) }
+                .build()
+                .getOrThrow()
 
         val jsonStr = elicitationTestJson.encodeToString(ElicitationSchema.serializer(), schema)
         val json = elicitationTestJson.parseToJsonElement(jsonStr).jsonObject
