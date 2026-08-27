@@ -1,4 +1,4 @@
-// port-lint: source rmcp/src/handler/server/common.rs
+// port-lint: source handler/server/common.rs
 @file:OptIn(ExperimentalStdlibApi::class)
 
 package io.github.kotlinmania.rmcp.handler.server

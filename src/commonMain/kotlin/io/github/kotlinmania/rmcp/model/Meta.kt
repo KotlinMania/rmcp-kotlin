@@ -1,4 +1,4 @@
-// port-lint: source rmcp/src/model/meta.rs
+// port-lint: source model/meta.rs
 package io.github.kotlinmania.rmcp.model
 
 import kotlinx.serialization.Serializable

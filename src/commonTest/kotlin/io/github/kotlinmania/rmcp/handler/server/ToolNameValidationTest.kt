@@ -1,4 +1,4 @@
-// port-lint: source rmcp/src/handler/server/tool_name_validation.rs
+// port-lint: tests handler/server/tool_name_validation.rs
 package io.github.kotlinmania.rmcp.handler.server
 
 import kotlin.test.Test

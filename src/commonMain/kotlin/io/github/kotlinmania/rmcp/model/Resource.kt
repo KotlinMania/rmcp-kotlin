@@ -1,4 +1,4 @@
-// port-lint: source rmcp/src/model/resource.rs
+// port-lint: source model/resource.rs
 package io.github.kotlinmania.rmcp.model
 
 import kotlinx.serialization.SerialName

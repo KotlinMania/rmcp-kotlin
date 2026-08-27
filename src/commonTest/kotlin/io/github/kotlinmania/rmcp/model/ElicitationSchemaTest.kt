@@ -1,4 +1,4 @@
-// port-lint: tests rmcp/src/model/elicitation_schema.rs
+// port-lint: tests model/elicitation_schema.rs
 @file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
 
 package io.github.kotlinmania.rmcp.model
