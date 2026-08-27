@@ -1,4 +1,4 @@
-// port-lint: source rmcp/src/transport/io.rs
+// port-lint: source transport/io.rs
 package io.github.kotlinmania.rmcp.transport
 
 /**
