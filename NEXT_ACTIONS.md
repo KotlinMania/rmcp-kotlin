@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 19/56 (33.9%)
-- **Function parity:** 314/866 matched (target 563) — 36.3%
-- **Class/type parity:** 218/462 matched (target 359) — 47.2%
-- **Combined symbol parity:** 532/1328 matched (target 922) — 40.1%
-- **Average inline-code cosine:** 0.51 (function body across 19 matched files)
-- **Average documentation cosine:** 0.76 (doc text across 19 matched files)
-- **Cheat-zeroed Files:** 2
-- **Critical Issues:** 12 files with <0.60 function similarity
+- **Files Present:** 18/56 (32.1%)
+- **Function parity:** 323/866 matched (target 563) — 37.3%
+- **Class/type parity:** 220/462 matched (target 359) — 47.6%
+- **Combined symbol parity:** 543/1328 matched (target 922) — 40.9%
+- **Average inline-code cosine:** 0.56 (function body across 18 matched files)
+- **Average documentation cosine:** 0.80 (doc text across 18 matched files)
+- **Cheat-zeroed Files:** 1
+- **Critical Issues:** 11 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -62,19 +62,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `AnyMap`, `IdHasher`, `AnyClone`
 - **Tests:** 1/1 matched
 
-### 4. server.common
-
-- **Target:** `server.Common`
-- **Similarity:** 0.04
-- **Dependents:** 0
-- **Priority Score:** 121809.6
-- **Functions:** 2/12 matched (target 4)
-- **Missing functions:** `from_context_part`, `test_schema_for_type_handles_primitive`, `test_schema_for_type_handles_array`, `test_schema_for_type_handles_struct`, `test_schema_for_type_caches_primitive_types`, `test_schema_for_type_caches_struct_types`, `test_schema_for_type_different_types_different_schemas`, `test_schema_for_type_arc_can_be_shared`, `test_schema_for_output_rejects_primitive`, `test_schema_for_output_accepts_object`
-- **Types:** 4/6 matched (target 4)
-- **Missing types:** `TestObject`, `AnotherTestObject`
-- **Tests:** 0/9 matched
-
-### 5. model.elicitation_schema
+### 4. model.elicitation_schema
 
 - **Target:** `model.ElicitationSchema [ZERO]`
 - **Similarity:** 0.00
@@ -86,7 +74,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `SingleSelect`, `MultiSelect`, `TitledEnum`, `UntitledEnum`, `UserInfo`
 - **Tests:** 24/26 matched
 
-### 6. model.meta
+### 5. model.meta
 
 - **Target:** `model.Meta`
 - **Similarity:** 0.34
@@ -97,7 +85,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/6 matched (target 5)
 - **Missing types:** `Target`
 
-### 7. common.client_side_sse
+### 6. common.client_side_sse
 
 - **Target:** `common.ClientSideSse`
 - **Similarity:** 0.51
@@ -108,7 +96,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 7/10 matched (target 14)
 - **Missing types:** `Error`, `Future`, `Item`
 
-### 8. common.server_side_http
+### 7. common.server_side_http
 
 - **Target:** `common.ServerSideHttp`
 - **Similarity:** 0.29
@@ -119,7 +107,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `BoxResponse`, `Output`
 
-### 9. model.annotated
+### 8. model.annotated
 
 - **Target:** `model.Annotated`
 - **Similarity:** 0.67
@@ -129,6 +117,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `deref`, `deref_mut`
 - **Types:** 3/5 matched (target 3)
 - **Missing types:** `Target`, `Sealed`
+
+### 9. server.common
+
+- **Target:** `server.Common`
+- **Similarity:** 0.43
+- **Dependents:** 0
+- **Priority Score:** 11805.7
+- **Functions:** 11/12 matched (target 13)
+- **Missing functions:** `from_context_part`
+- **Types:** 6/6 matched (target 7)
+- **Missing types:** _none_
+- **Tests:** 9/9 matched
 
 ### 10. model.capabilities
 
@@ -223,21 +223,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 
-### 18. transport.common
-
-- **Target:** `server.CommonTest [ZERO] [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10.0
-- **Functions:** 0/0 matched (target 9)
-- **Missing functions:** _none_
-- **Types:** 0/0 matched (target 3)
-- **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only by basename: `handler/server/common.rs` vs expected `transport/common.rs`
-- **Proposed provenance header:** `// port-lint: source transport/common.rs` (current: `// port-lint: source handler/server/common.rs`)
-- **Lint issues:** 1
-
-### 19. common.http_header
+### 18. common.http_header
 
 - **Target:** `common.HttpHeader`
 - **Similarity:** 1.00
@@ -256,17 +242,4 @@ For each file to be considered "complete":
 - All tests ported
 - Documentation ported
 - port-lint header present
-
-## Reexport / Wiring Modules
-
-These files match `reexport_modules` patterns in `.ast_distance_config.json`. They are filtered out of
-normal priority and missing-file ladders because they are wiring
-modules, not direct logic ports. Consult them for call-site routing;
-do not treat them as the next implementation target by default.
-
-### Missing
-
-| Source | Expected target | Deps | Source path | Expected path |
-|--------|-----------------|------|-------------|---------------|
-| `lib` | `Lib` | 0 | `lib.rs` | `Lib.kt` |
 

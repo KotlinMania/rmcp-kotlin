@@ -1,4 +1,4 @@
-// port-lint: source handler/server/common.rs
+// port-lint: tests handler/server/common.rs
 package io.github.kotlinmania.rmcp.handler.server
 
 import kotlinx.serialization.Serializable
