@@ -269,27 +269,31 @@ class JsonRpcRequestSerializer<R>(
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("JsonRpcRequest")
 
     override fun serialize(encoder: Encoder, value: JsonRpcRequest<R>) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("JsonRpcRequest can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("JsonRpcRequest can only be serialized as JSON")
         val reqElement = jsonEncoder.json.encodeToJsonElement(requestSerializer, value.request)
         val reqObj = reqElement.jsonObject
         val idElement = jsonEncoder.json.encodeToJsonElement(NumberOrStringSerializer, value.id)
-        val map = buildMap {
-            put("jsonrpc", JsonPrimitive(value.jsonrpc))
-            put("id", idElement)
-            putAll(reqObj)
-        }
+        val map =
+            buildMap {
+                put("jsonrpc", JsonPrimitive(value.jsonrpc))
+                put("id", idElement)
+                putAll(reqObj)
+            }
         jsonEncoder.encodeJsonElement(JsonObject(map))
     }
 
     override fun deserialize(decoder: Decoder): JsonRpcRequest<R> {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("JsonRpcRequest can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("JsonRpcRequest can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val jsonrpc = obj["jsonrpc"]?.jsonPrimitive?.content ?: JsonRpcVersion2Point0.value
-        val id = obj["id"]?.let { jsonDecoder.json.decodeFromJsonElement(NumberOrStringSerializer, it) }
-            ?: throw SerializationException("Missing 'id' in JsonRpcRequest")
+        val id =
+            obj["id"]?.let { jsonDecoder.json.decodeFromJsonElement(NumberOrStringSerializer, it) }
+                ?: throw SerializationException("Missing 'id' in JsonRpcRequest")
         val request = jsonDecoder.json.decodeFromJsonElement(requestSerializer, element)
         return JsonRpcRequest(jsonrpc = jsonrpc, id = id, request = request)
     }
@@ -323,20 +327,23 @@ class JsonRpcNotificationSerializer<N>(
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("JsonRpcNotification")
 
     override fun serialize(encoder: Encoder, value: JsonRpcNotification<N>) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("JsonRpcNotification can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("JsonRpcNotification can only be serialized as JSON")
         val notiElement = jsonEncoder.json.encodeToJsonElement(notificationSerializer, value.notification)
         val notiObj = notiElement.jsonObject
-        val map = buildMap {
-            put("jsonrpc", JsonPrimitive(value.jsonrpc))
-            putAll(notiObj)
-        }
+        val map =
+            buildMap {
+                put("jsonrpc", JsonPrimitive(value.jsonrpc))
+                putAll(notiObj)
+            }
         jsonEncoder.encodeJsonElement(JsonObject(map))
     }
 
     override fun deserialize(decoder: Decoder): JsonRpcNotification<N> {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("JsonRpcNotification can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("JsonRpcNotification can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val jsonrpc = obj["jsonrpc"]?.jsonPrimitive?.content ?: JsonRpcVersion2Point0.value
@@ -520,8 +527,9 @@ class JsonRpcMessageSerializer<Req, Resp, Noti>(
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("JsonRpcMessage")
 
     override fun serialize(encoder: Encoder, value: JsonRpcMessage<Req, Resp, Noti>) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("JsonRpcMessage can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("JsonRpcMessage can only be serialized as JSON")
         when (value) {
             is JsonRpcMessage.RequestMessage -> {
                 val element = jsonEncoder.json.encodeToJsonElement(JsonRpcRequestSerializer(reqSerializer), value.value)
@@ -543,8 +551,9 @@ class JsonRpcMessageSerializer<Req, Resp, Noti>(
     }
 
     override fun deserialize(decoder: Decoder): JsonRpcMessage<Req, Resp, Noti> {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("JsonRpcMessage can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("JsonRpcMessage can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val json = jsonDecoder.json
@@ -2208,33 +2217,38 @@ object CreateElicitationRequestParamsSerializer : KSerializer<CreateElicitationR
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("CreateElicitationRequestParams")
 
     override fun serialize(encoder: Encoder, value: CreateElicitationRequestParams) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("CreateElicitationRequestParams can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("CreateElicitationRequestParams can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is CreateElicitationRequestParams.FormElicitationParams -> {
-                val formObj = json.encodeToJsonElement(CreateElicitationRequestParams.FormElicitationParams.serializer(), value).jsonObject
-                val map = buildMap {
-                    put("mode", JsonPrimitive("form"))
-                    putAll(formObj)
+        val element =
+            when (value) {
+                is CreateElicitationRequestParams.FormElicitationParams -> {
+                    val formObj = json.encodeToJsonElement(CreateElicitationRequestParams.FormElicitationParams.serializer(), value).jsonObject
+                    val map =
+                        buildMap {
+                            put("mode", JsonPrimitive("form"))
+                            putAll(formObj)
+                        }
+                    JsonObject(map)
                 }
-                JsonObject(map)
-            }
-            is CreateElicitationRequestParams.UrlElicitationParams -> {
-                val urlObj = json.encodeToJsonElement(CreateElicitationRequestParams.UrlElicitationParams.serializer(), value).jsonObject
-                val map = buildMap {
-                    put("mode", JsonPrimitive("url"))
-                    putAll(urlObj)
+                is CreateElicitationRequestParams.UrlElicitationParams -> {
+                    val urlObj = json.encodeToJsonElement(CreateElicitationRequestParams.UrlElicitationParams.serializer(), value).jsonObject
+                    val map =
+                        buildMap {
+                            put("mode", JsonPrimitive("url"))
+                            putAll(urlObj)
+                        }
+                    JsonObject(map)
                 }
-                JsonObject(map)
             }
-        }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): CreateElicitationRequestParams {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("CreateElicitationRequestParams can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("CreateElicitationRequestParams can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val mode = obj["mode"]?.jsonPrimitive?.contentOrNull
@@ -2784,35 +2798,38 @@ object ClientRequestSerializer : KSerializer<ClientRequest> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ClientRequest")
 
     override fun serialize(encoder: Encoder, value: ClientRequest) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("ClientRequest can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("ClientRequest can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is ClientRequest.PingRequest -> json.encodeToJsonElement(RequestNoParam.serializer(), value.value)
-            is ClientRequest.InitializeRequest -> json.encodeToJsonElement(InitializeRequest.serializer(), value.value)
-            is ClientRequest.CompleteRequest -> json.encodeToJsonElement(CompleteRequest.serializer(), value.value)
-            is ClientRequest.SetLevelRequest -> json.encodeToJsonElement(SetLevelRequest.serializer(), value.value)
-            is ClientRequest.GetPromptRequest -> json.encodeToJsonElement(GetPromptRequest.serializer(), value.value)
-            is ClientRequest.ListPromptsRequest -> json.encodeToJsonElement(ListPromptsRequest.serializer(), value.value)
-            is ClientRequest.ListResourcesRequest -> json.encodeToJsonElement(ListResourcesRequest.serializer(), value.value)
-            is ClientRequest.ListResourceTemplatesRequest -> json.encodeToJsonElement(ListResourceTemplatesRequest.serializer(), value.value)
-            is ClientRequest.ReadResourceRequest -> json.encodeToJsonElement(ReadResourceRequest.serializer(), value.value)
-            is ClientRequest.SubscribeRequest -> json.encodeToJsonElement(SubscribeRequest.serializer(), value.value)
-            is ClientRequest.UnsubscribeRequest -> json.encodeToJsonElement(UnsubscribeRequest.serializer(), value.value)
-            is ClientRequest.CallToolRequest -> json.encodeToJsonElement(CallToolRequest.serializer(), value.value)
-            is ClientRequest.ListToolsRequest -> json.encodeToJsonElement(ListToolsRequest.serializer(), value.value)
-            is ClientRequest.GetTaskInfoRequest -> json.encodeToJsonElement(GetTaskInfoRequest.serializer(), value.value)
-            is ClientRequest.ListTasksRequest -> json.encodeToJsonElement(ListTasksRequest.serializer(), value.value)
-            is ClientRequest.GetTaskResultRequest -> json.encodeToJsonElement(GetTaskResultRequest.serializer(), value.value)
-            is ClientRequest.CancelTaskRequest -> json.encodeToJsonElement(CancelTaskRequest.serializer(), value.value)
-            is ClientRequest.CustomRequest -> json.encodeToJsonElement(CustomRequest.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is ClientRequest.PingRequest -> json.encodeToJsonElement(RequestNoParam.serializer(), value.value)
+                is ClientRequest.InitializeRequest -> json.encodeToJsonElement(InitializeRequest.serializer(), value.value)
+                is ClientRequest.CompleteRequest -> json.encodeToJsonElement(CompleteRequest.serializer(), value.value)
+                is ClientRequest.SetLevelRequest -> json.encodeToJsonElement(SetLevelRequest.serializer(), value.value)
+                is ClientRequest.GetPromptRequest -> json.encodeToJsonElement(GetPromptRequest.serializer(), value.value)
+                is ClientRequest.ListPromptsRequest -> json.encodeToJsonElement(ListPromptsRequest.serializer(), value.value)
+                is ClientRequest.ListResourcesRequest -> json.encodeToJsonElement(ListResourcesRequest.serializer(), value.value)
+                is ClientRequest.ListResourceTemplatesRequest -> json.encodeToJsonElement(ListResourceTemplatesRequest.serializer(), value.value)
+                is ClientRequest.ReadResourceRequest -> json.encodeToJsonElement(ReadResourceRequest.serializer(), value.value)
+                is ClientRequest.SubscribeRequest -> json.encodeToJsonElement(SubscribeRequest.serializer(), value.value)
+                is ClientRequest.UnsubscribeRequest -> json.encodeToJsonElement(UnsubscribeRequest.serializer(), value.value)
+                is ClientRequest.CallToolRequest -> json.encodeToJsonElement(CallToolRequest.serializer(), value.value)
+                is ClientRequest.ListToolsRequest -> json.encodeToJsonElement(ListToolsRequest.serializer(), value.value)
+                is ClientRequest.GetTaskInfoRequest -> json.encodeToJsonElement(GetTaskInfoRequest.serializer(), value.value)
+                is ClientRequest.ListTasksRequest -> json.encodeToJsonElement(ListTasksRequest.serializer(), value.value)
+                is ClientRequest.GetTaskResultRequest -> json.encodeToJsonElement(GetTaskResultRequest.serializer(), value.value)
+                is ClientRequest.CancelTaskRequest -> json.encodeToJsonElement(CancelTaskRequest.serializer(), value.value)
+                is ClientRequest.CustomRequest -> json.encodeToJsonElement(CustomRequest.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): ClientRequest {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("ClientRequest can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("ClientRequest can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val method = obj["method"]?.jsonPrimitive?.content ?: ""
@@ -2868,22 +2885,25 @@ object ClientNotificationSerializer : KSerializer<ClientNotification> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ClientNotification")
 
     override fun serialize(encoder: Encoder, value: ClientNotification) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("ClientNotification can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("ClientNotification can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is ClientNotification.CancelledNotification -> json.encodeToJsonElement(CancelledNotification.serializer(), value.value)
-            is ClientNotification.ProgressNotification -> json.encodeToJsonElement(ProgressNotification.serializer(), value.value)
-            is ClientNotification.InitializedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
-            is ClientNotification.RootsListChangedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
-            is ClientNotification.CustomNotification -> json.encodeToJsonElement(CustomNotification.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is ClientNotification.CancelledNotification -> json.encodeToJsonElement(CancelledNotification.serializer(), value.value)
+                is ClientNotification.ProgressNotification -> json.encodeToJsonElement(ProgressNotification.serializer(), value.value)
+                is ClientNotification.InitializedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
+                is ClientNotification.RootsListChangedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
+                is ClientNotification.CustomNotification -> json.encodeToJsonElement(CustomNotification.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): ClientNotification {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("ClientNotification can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("ClientNotification can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val method = obj["method"]?.jsonPrimitive?.content ?: ""
@@ -2931,22 +2951,25 @@ object ClientResultSerializer : KSerializer<ClientResult> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ClientResult")
 
     override fun serialize(encoder: Encoder, value: ClientResult) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("ClientResult can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("ClientResult can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is ClientResult.CreateMessageResult -> json.encodeToJsonElement(CreateMessageResult.serializer(), value.value)
-            is ClientResult.ListRootsResult -> json.encodeToJsonElement(ListRootsResult.serializer(), value.value)
-            is ClientResult.CreateElicitationResult -> json.encodeToJsonElement(CreateElicitationResult.serializer(), value.value)
-            is ClientResult.EmptyResult -> json.encodeToJsonElement(EmptyResult.serializer(), value.value)
-            is ClientResult.CustomResult -> json.encodeToJsonElement(CustomResult.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is ClientResult.CreateMessageResult -> json.encodeToJsonElement(CreateMessageResult.serializer(), value.value)
+                is ClientResult.ListRootsResult -> json.encodeToJsonElement(ListRootsResult.serializer(), value.value)
+                is ClientResult.CreateElicitationResult -> json.encodeToJsonElement(CreateElicitationResult.serializer(), value.value)
+                is ClientResult.EmptyResult -> json.encodeToJsonElement(EmptyResult.serializer(), value.value)
+                is ClientResult.CustomResult -> json.encodeToJsonElement(CustomResult.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): ClientResult {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("ClientResult can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("ClientResult can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val json = jsonDecoder.json
@@ -2994,22 +3017,25 @@ object ServerRequestSerializer : KSerializer<ServerRequest> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ServerRequest")
 
     override fun serialize(encoder: Encoder, value: ServerRequest) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("ServerRequest can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("ServerRequest can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is ServerRequest.PingRequest -> json.encodeToJsonElement(RequestNoParam.serializer(), value.value)
-            is ServerRequest.CreateMessageRequest -> json.encodeToJsonElement(CreateMessageRequest.serializer(), value.value)
-            is ServerRequest.ListRootsRequest -> json.encodeToJsonElement(ListRootsRequest.serializer(), value.value)
-            is ServerRequest.CreateElicitationRequest -> json.encodeToJsonElement(CreateElicitationRequest.serializer(), value.value)
-            is ServerRequest.CustomRequest -> json.encodeToJsonElement(CustomRequest.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is ServerRequest.PingRequest -> json.encodeToJsonElement(RequestNoParam.serializer(), value.value)
+                is ServerRequest.CreateMessageRequest -> json.encodeToJsonElement(CreateMessageRequest.serializer(), value.value)
+                is ServerRequest.ListRootsRequest -> json.encodeToJsonElement(ListRootsRequest.serializer(), value.value)
+                is ServerRequest.CreateElicitationRequest -> json.encodeToJsonElement(CreateElicitationRequest.serializer(), value.value)
+                is ServerRequest.CustomRequest -> json.encodeToJsonElement(CustomRequest.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): ServerRequest {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("ServerRequest can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("ServerRequest can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val method = obj["method"]?.jsonPrimitive?.content ?: ""
@@ -3068,26 +3094,29 @@ object ServerNotificationSerializer : KSerializer<ServerNotification> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ServerNotification")
 
     override fun serialize(encoder: Encoder, value: ServerNotification) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("ServerNotification can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("ServerNotification can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is ServerNotification.CancelledNotification -> json.encodeToJsonElement(CancelledNotification.serializer(), value.value)
-            is ServerNotification.ProgressNotification -> json.encodeToJsonElement(ProgressNotification.serializer(), value.value)
-            is ServerNotification.LoggingMessageNotification -> json.encodeToJsonElement(LoggingMessageNotification.serializer(), value.value)
-            is ServerNotification.ResourceUpdatedNotification -> json.encodeToJsonElement(ResourceUpdatedNotification.serializer(), value.value)
-            is ServerNotification.ResourceListChangedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
-            is ServerNotification.ToolListChangedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
-            is ServerNotification.PromptListChangedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
-            is ServerNotification.ElicitationCompletionNotification -> json.encodeToJsonElement(ElicitationCompletionNotification.serializer(), value.value)
-            is ServerNotification.CustomNotification -> json.encodeToJsonElement(CustomNotification.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is ServerNotification.CancelledNotification -> json.encodeToJsonElement(CancelledNotification.serializer(), value.value)
+                is ServerNotification.ProgressNotification -> json.encodeToJsonElement(ProgressNotification.serializer(), value.value)
+                is ServerNotification.LoggingMessageNotification -> json.encodeToJsonElement(LoggingMessageNotification.serializer(), value.value)
+                is ServerNotification.ResourceUpdatedNotification -> json.encodeToJsonElement(ResourceUpdatedNotification.serializer(), value.value)
+                is ServerNotification.ResourceListChangedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
+                is ServerNotification.ToolListChangedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
+                is ServerNotification.PromptListChangedNotification -> json.encodeToJsonElement(NotificationNoParam.serializer(), value.value)
+                is ServerNotification.ElicitationCompletionNotification -> json.encodeToJsonElement(ElicitationCompletionNotification.serializer(), value.value)
+                is ServerNotification.CustomNotification -> json.encodeToJsonElement(CustomNotification.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): ServerNotification {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("ServerNotification can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("ServerNotification can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val method = obj["method"]?.jsonPrimitive?.content ?: ""
@@ -3183,33 +3212,36 @@ object ServerResultSerializer : KSerializer<ServerResult> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ServerResult")
 
     override fun serialize(encoder: Encoder, value: ServerResult) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("ServerResult can only be serialized as JSON")
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("ServerResult can only be serialized as JSON")
         val json = jsonEncoder.json
-        val element = when (value) {
-            is ServerResult.InitializeResult -> json.encodeToJsonElement(InitializeResult.serializer(), value.value)
-            is ServerResult.CompleteResult -> json.encodeToJsonElement(CompleteResult.serializer(), value.value)
-            is ServerResult.GetPromptResult -> json.encodeToJsonElement(GetPromptResult.serializer(), value.value)
-            is ServerResult.ListPromptsResult -> json.encodeToJsonElement(ListPromptsResult.serializer(), value.value)
-            is ServerResult.ListResourcesResult -> json.encodeToJsonElement(ListResourcesResult.serializer(), value.value)
-            is ServerResult.ListResourceTemplatesResult -> json.encodeToJsonElement(ListResourceTemplatesResult.serializer(), value.value)
-            is ServerResult.ReadResourceResult -> json.encodeToJsonElement(ReadResourceResult.serializer(), value.value)
-            is ServerResult.CallToolResult -> json.encodeToJsonElement(CallToolResult.serializer(), value.value)
-            is ServerResult.ListToolsResult -> json.encodeToJsonElement(ListToolsResult.serializer(), value.value)
-            is ServerResult.CreateElicitationResult -> json.encodeToJsonElement(CreateElicitationResult.serializer(), value.value)
-            is ServerResult.EmptyResult -> json.encodeToJsonElement(EmptyResult.serializer(), value.value)
-            is ServerResult.CreateTaskResult -> json.encodeToJsonElement(CreateTaskResult.serializer(), value.value)
-            is ServerResult.ListTasksResult -> json.encodeToJsonElement(ListTasksResult.serializer(), value.value)
-            is ServerResult.GetTaskInfoResult -> json.encodeToJsonElement(GetTaskInfoResult.serializer(), value.value)
-            is ServerResult.TaskResult -> json.encodeToJsonElement(TaskResult.serializer(), value.value)
-            is ServerResult.CustomResult -> json.encodeToJsonElement(CustomResult.serializer(), value.value)
-        }
+        val element =
+            when (value) {
+                is ServerResult.InitializeResult -> json.encodeToJsonElement(InitializeResult.serializer(), value.value)
+                is ServerResult.CompleteResult -> json.encodeToJsonElement(CompleteResult.serializer(), value.value)
+                is ServerResult.GetPromptResult -> json.encodeToJsonElement(GetPromptResult.serializer(), value.value)
+                is ServerResult.ListPromptsResult -> json.encodeToJsonElement(ListPromptsResult.serializer(), value.value)
+                is ServerResult.ListResourcesResult -> json.encodeToJsonElement(ListResourcesResult.serializer(), value.value)
+                is ServerResult.ListResourceTemplatesResult -> json.encodeToJsonElement(ListResourceTemplatesResult.serializer(), value.value)
+                is ServerResult.ReadResourceResult -> json.encodeToJsonElement(ReadResourceResult.serializer(), value.value)
+                is ServerResult.CallToolResult -> json.encodeToJsonElement(CallToolResult.serializer(), value.value)
+                is ServerResult.ListToolsResult -> json.encodeToJsonElement(ListToolsResult.serializer(), value.value)
+                is ServerResult.CreateElicitationResult -> json.encodeToJsonElement(CreateElicitationResult.serializer(), value.value)
+                is ServerResult.EmptyResult -> json.encodeToJsonElement(EmptyResult.serializer(), value.value)
+                is ServerResult.CreateTaskResult -> json.encodeToJsonElement(CreateTaskResult.serializer(), value.value)
+                is ServerResult.ListTasksResult -> json.encodeToJsonElement(ListTasksResult.serializer(), value.value)
+                is ServerResult.GetTaskInfoResult -> json.encodeToJsonElement(GetTaskInfoResult.serializer(), value.value)
+                is ServerResult.TaskResult -> json.encodeToJsonElement(TaskResult.serializer(), value.value)
+                is ServerResult.CustomResult -> json.encodeToJsonElement(CustomResult.serializer(), value.value)
+            }
         jsonEncoder.encodeJsonElement(element)
     }
 
     override fun deserialize(decoder: Decoder): ServerResult {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("ServerResult can only be decoded from JSON")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("ServerResult can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
         val json = jsonDecoder.json
