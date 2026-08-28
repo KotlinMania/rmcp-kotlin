@@ -5,12 +5,12 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 18/56 (32.1%)
-- **Function parity:** 323/866 matched (target 563) — 37.3%
-- **Class/type parity:** 220/462 matched (target 359) — 47.6%
-- **Combined symbol parity:** 543/1328 matched (target 922) — 40.9%
+- **Function parity:** 235/775 matched (target 440) — 30.3%
+- **Class/type parity:** 200/437 matched (target 317) — 45.8%
+- **Combined symbol parity:** 435/1212 matched (target 757) — 35.9%
 - **Average inline-code cosine:** 0.56 (function body across 18 matched files)
 - **Average documentation cosine:** 0.80 (doc text across 18 matched files)
-- **Cheat-zeroed Files:** 1
+- **Cheat-zeroed Files:** 0
 - **Critical Issues:** 11 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
@@ -62,19 +62,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `AnyMap`, `IdHasher`, `AnyClone`
 - **Tests:** 1/1 matched
 
-### 4. model.elicitation_schema
-
-- **Target:** `model.ElicitationSchema [ZERO]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 91610.0
-- **Functions:** 88/91 matched (target 123)
-- **Missing functions:** `from_type`, `default_untitled_multi_select`, `test_schema_inference_for_enum_fields`
-- **Types:** 20/25 matched (target 42)
-- **Missing types:** `SingleSelect`, `MultiSelect`, `TitledEnum`, `UntitledEnum`, `UserInfo`
-- **Tests:** 24/26 matched
-
-### 5. model.meta
+### 4. model.meta
 
 - **Target:** `model.Meta`
 - **Similarity:** 0.34
@@ -85,7 +73,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/6 matched (target 5)
 - **Missing types:** `Target`
 
-### 6. common.client_side_sse
+### 5. common.client_side_sse
 
 - **Target:** `common.ClientSideSse`
 - **Similarity:** 0.51
@@ -96,7 +84,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 7/10 matched (target 14)
 - **Missing types:** `Error`, `Future`, `Item`
 
-### 7. common.server_side_http
+### 6. common.server_side_http
 
 - **Target:** `common.ServerSideHttp`
 - **Similarity:** 0.29
@@ -107,7 +95,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `BoxResponse`, `Output`
 
-### 8. model.annotated
+### 7. model.annotated
 
 - **Target:** `model.Annotated`
 - **Similarity:** 0.67
@@ -118,7 +106,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/5 matched (target 3)
 - **Missing types:** `Target`, `Sealed`
 
-### 9. server.common
+### 8. server.common
 
 - **Target:** `server.Common`
 - **Similarity:** 0.43
@@ -130,7 +118,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 9/9 matched
 
-### 10. model.capabilities
+### 9. model.capabilities
 
 - **Target:** `model.Capabilities`
 - **Similarity:** 0.58
@@ -142,7 +130,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 8/8 matched
 
-### 11. model.content
+### 10. model.content
 
 - **Target:** `model.Content`
 - **Similarity:** 0.74
@@ -154,7 +142,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 4/4 matched
 
-### 12. model.tool
+### 11. model.tool
 
 - **Target:** `model.Tool`
 - **Similarity:** 0.68
@@ -165,7 +153,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/4 matched
 - **Missing types:** _none_
 
-### 13. model.prompt
+### 12. model.prompt
 
 - **Target:** `model.Prompt`
 - **Similarity:** 0.81
@@ -177,7 +165,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 3/3 matched
 
-### 14. server.tool_name_validation
+### 13. server.tool_name_validation
 
 - **Target:** `server.ToolNameValidation`
 - **Similarity:** 0.83
@@ -189,7 +177,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 11/11 matched
 
-### 15. model.resource
+### 14. model.resource
 
 - **Target:** `model.Resource`
 - **Similarity:** 0.59
@@ -201,7 +189,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 4/4 matched
 
-### 16. model.task
+### 15. model.task
 
 - **Target:** `model.Task`
 - **Similarity:** 1.00
@@ -212,7 +200,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/5 matched
 - **Missing types:** _none_
 
-### 17. transport.io
+### 16. transport.io
 
 - **Target:** `transport.Io`
 - **Similarity:** 0.47
@@ -223,7 +211,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 
-### 18. common.http_header
+### 17. common.http_header
 
 - **Target:** `common.HttpHeader`
 - **Similarity:** 1.00
@@ -242,4 +230,17 @@ For each file to be considered "complete":
 - All tests ported
 - Documentation ported
 - port-lint header present
+
+## Reexport / Wiring Modules
+
+These files match `reexport_modules` patterns in `.ast_distance_config.json`. They are filtered out of
+normal priority and missing-file ladders because they are wiring
+modules, not direct logic ports. Consult them for call-site routing;
+do not treat them as the next implementation target by default.
+
+### Matched
+
+| Source | Target | Path |
+|--------|--------|------|
+| `model.elicitation_schema` | `model.ElicitationSchema` | `model/elicitation_schema` |
 
