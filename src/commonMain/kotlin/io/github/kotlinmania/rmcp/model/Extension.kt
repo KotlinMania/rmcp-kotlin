@@ -1,4 +1,4 @@
-// port-lint: source model/extension.rs
+// port-lint: source rmcp/src/model/extension.rs
 package io.github.kotlinmania.rmcp.model
 
 import kotlin.reflect.KClass

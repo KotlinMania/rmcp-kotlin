@@ -1,4 +1,4 @@
-// port-lint: source transport/common/http_header.rs
+// port-lint: source rmcp/src/transport/common/http_header.rs
 package io.github.kotlinmania.rmcp.transport.common
 
 const val HEADER_SESSION_ID: String = "Mcp-Session-Id"
