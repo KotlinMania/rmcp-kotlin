@@ -4,13 +4,13 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 18/56 (32.1%)
-- **Function parity:** 235/775 matched (target 440) — 30.3%
-- **Class/type parity:** 200/437 matched (target 317) — 45.8%
-- **Combined symbol parity:** 435/1212 matched (target 757) — 35.9%
+- **Files Present:** 18/94 (19.1%)
+- **Function parity:** 323/1184 matched (target 563) — 27.3%
+- **Class/type parity:** 220/537 matched (target 359) — 41.0%
+- **Combined symbol parity:** 543/1721 matched (target 922) — 31.6%
 - **Average inline-code cosine:** 0.56 (function body across 18 matched files)
 - **Average documentation cosine:** 0.80 (doc text across 18 matched files)
-- **Cheat-zeroed Files:** 0
+- **Cheat-zeroed Files:** 1
 - **Critical Issues:** 11 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
@@ -21,13 +21,15 @@ No incomplete high-dependency files detected.
 
 Critical missing files (>10 dependencies):
 
-No missing high-value files detected.
+1. **wrapper.json** (13 deps)
+   - Path: `rmcp/src/handler/server/wrapper/json.rs`
+   - Essential for 13 other files
 
 ## Detailed Work Items
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. error
+### 1. rmcp.error
 
 - **Target:** `rmcp.Error`
 - **Similarity:** 0.45
@@ -38,7 +40,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 10)
 - **Missing types:** _none_
 
-### 2. model
+### 2. rmcp.model
 
 - **Target:** `model.Model`
 - **Similarity:** 0.48
@@ -62,7 +64,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `AnyMap`, `IdHasher`, `AnyClone`
 - **Tests:** 1/1 matched
 
-### 4. model.meta
+### 4. model.elicitation_schema
+
+- **Target:** `model.ElicitationSchema [ZERO]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 91610.0
+- **Functions:** 88/91 matched (target 123)
+- **Missing functions:** `from_type`, `default_untitled_multi_select`, `test_schema_inference_for_enum_fields`
+- **Types:** 20/25 matched (target 42)
+- **Missing types:** `SingleSelect`, `MultiSelect`, `TitledEnum`, `UntitledEnum`, `UserInfo`
+- **Tests:** 24/26 matched
+
+### 5. model.meta
 
 - **Target:** `model.Meta`
 - **Similarity:** 0.34
@@ -73,7 +87,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/6 matched (target 5)
 - **Missing types:** `Target`
 
-### 5. common.client_side_sse
+### 6. common.client_side_sse
 
 - **Target:** `common.ClientSideSse`
 - **Similarity:** 0.51
@@ -84,7 +98,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 7/10 matched (target 14)
 - **Missing types:** `Error`, `Future`, `Item`
 
-### 6. common.server_side_http
+### 7. common.server_side_http
 
 - **Target:** `common.ServerSideHttp`
 - **Similarity:** 0.29
@@ -95,7 +109,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `BoxResponse`, `Output`
 
-### 7. model.annotated
+### 8. model.annotated
 
 - **Target:** `model.Annotated`
 - **Similarity:** 0.67
@@ -106,7 +120,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/5 matched (target 3)
 - **Missing types:** `Target`, `Sealed`
 
-### 8. server.common
+### 9. server.common
 
 - **Target:** `server.Common`
 - **Similarity:** 0.43
@@ -118,7 +132,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 9/9 matched
 
-### 9. model.capabilities
+### 10. model.capabilities
 
 - **Target:** `model.Capabilities`
 - **Similarity:** 0.58
@@ -130,7 +144,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 8/8 matched
 
-### 10. model.content
+### 11. model.content
 
 - **Target:** `model.Content`
 - **Similarity:** 0.74
@@ -142,7 +156,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 4/4 matched
 
-### 11. model.tool
+### 12. model.tool
 
 - **Target:** `model.Tool`
 - **Similarity:** 0.68
@@ -153,7 +167,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/4 matched
 - **Missing types:** _none_
 
-### 12. model.prompt
+### 13. model.prompt
 
 - **Target:** `model.Prompt`
 - **Similarity:** 0.81
@@ -165,7 +179,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 3/3 matched
 
-### 13. server.tool_name_validation
+### 14. server.tool_name_validation
 
 - **Target:** `server.ToolNameValidation`
 - **Similarity:** 0.83
@@ -177,7 +191,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 11/11 matched
 
-### 14. model.resource
+### 15. model.resource
 
 - **Target:** `model.Resource`
 - **Similarity:** 0.59
@@ -189,7 +203,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 4/4 matched
 
-### 15. model.task
+### 16. model.task
 
 - **Target:** `model.Task`
 - **Similarity:** 1.00
@@ -200,7 +214,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/5 matched
 - **Missing types:** _none_
 
-### 16. transport.io
+### 17. transport.io
 
 - **Target:** `transport.Io`
 - **Similarity:** 0.47
@@ -211,7 +225,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 
-### 17. common.http_header
+### 18. common.http_header
 
 - **Target:** `common.HttpHeader`
 - **Similarity:** 1.00
@@ -230,17 +244,4 @@ For each file to be considered "complete":
 - All tests ported
 - Documentation ported
 - port-lint header present
-
-## Reexport / Wiring Modules
-
-These files match `reexport_modules` patterns in `.ast_distance_config.json`. They are filtered out of
-normal priority and missing-file ladders because they are wiring
-modules, not direct logic ports. Consult them for call-site routing;
-do not treat them as the next implementation target by default.
-
-### Matched
-
-| Source | Target | Path |
-|--------|--------|------|
-| `model.elicitation_schema` | `model.ElicitationSchema` | `model/elicitation_schema` |
 
