@@ -17,7 +17,23 @@
   },
   "reexport_modules": [
     "lib",
+    "lib.rs",
+    "rmcp/src/lib.rs",
     "model/elicitation_schema",
-    "model.elicitation_schema"
+    "model.elicitation_schema",
+    "model/elicitation_schema.rs",
+    "rmcp/src/model/elicitation_schema.rs",
+    "model",
+    "model.rs",
+    "rmcp/src/model.rs",
+    "handler",
+    "handler.rs",
+    "rmcp/src/handler.rs",
+    "transport",
+    "transport.rs",
+    "rmcp/src/transport.rs",
+    "service",
+    "service.rs",
+    "rmcp/src/service.rs"
   ]
 }
