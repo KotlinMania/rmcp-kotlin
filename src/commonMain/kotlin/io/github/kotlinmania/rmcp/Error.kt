@@ -1,4 +1,4 @@
-// port-lint: source rmcp/src/error.rs
+// port-lint: source error.rs
 package io.github.kotlinmania.rmcp
 
 import io.github.kotlinmania.rmcp.model.ErrorData as ModelErrorData

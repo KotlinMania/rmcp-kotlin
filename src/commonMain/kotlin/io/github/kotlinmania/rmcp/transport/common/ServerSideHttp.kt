@@ -1,4 +1,4 @@
-// port-lint: source rmcp/src/transport/common/server_side_http.rs
+// port-lint: source transport/common/server_side_http.rs
 @file:OptIn(kotlin.time.ExperimentalTime::class)
 
 package io.github.kotlinmania.rmcp.transport.common

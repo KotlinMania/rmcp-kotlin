@@ -1,4 +1,4 @@
-// port-lint: source rmcp/src/model/prompt.rs
+// port-lint: source model/prompt.rs
 @file:OptIn(ExperimentalEncodingApi::class)
 
 package io.github.kotlinmania.rmcp.model
