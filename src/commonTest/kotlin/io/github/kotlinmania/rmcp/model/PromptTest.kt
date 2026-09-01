@@ -1,4 +1,4 @@
-// port-lint: tests rmcp/src/model/prompt.rs
+// port-lint: tests model/prompt.rs
 @file:OptIn(ExperimentalSerializationApi::class)
 
 package io.github.kotlinmania.rmcp.model

@@ -1,4 +1,4 @@
-// port-lint: tests rmcp/src/error.rs
+// port-lint: tests error.rs
 package io.github.kotlinmania.rmcp
 
 import io.github.kotlinmania.rmcp.model.ErrorCode

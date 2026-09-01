@@ -2,7 +2,7 @@
   "type": "port",
   "name": "rmcp-kotlin",
   "source": {
-    "path": "tmp",
+    "path": "tmp/rmcp/src",
     "lang": "rust"
   },
   "target": {
