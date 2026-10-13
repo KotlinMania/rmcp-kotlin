@@ -2,20 +2,15 @@
 package io.github.kotlinmania.rmcp.transport.common
 
 import io.github.kotlinmania.rmcp.model.ServerJsonRpcMessage
-import kotlinx.serialization.json.Json
+import io.github.kotlinmania.rmcp.model.modelJson
+import io.github.kotlinmania.ssestream.Sse
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlin.math.pow
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 internal typealias BoxedSseResponse = Iterator<Result<Sse>>
-
-internal data class Sse(
-    val id: String? = null,
-    val event: String? = null,
-    val data: String? = null,
-    val retry: Duration? = null,
-)
 
 internal interface SseRetryPolicy {
     fun retry(currentTimes: Int): Duration?
@@ -118,7 +113,7 @@ internal class SseAutoReconnectStream<R, E>(
                             continue
                         }
 
-                    sse.retry?.let { serverRetryInterval = it }
+                    sse.retry?.let { serverRetryInterval = it.toLong().milliseconds }
                     sse.id?.let { lastEventId = it }
 
                     val isMessageEvent = sse.event.isNullOrEmpty() || sse.event == "message"
@@ -134,9 +129,9 @@ internal class SseAutoReconnectStream<R, E>(
 
                     val data = sse.data ?: continue
                     val parsed =
-                        runCatching { Json.parseToJsonElement(data) }
+                        runCatching { modelJson.parseToJsonElement(data) }
                             .getOrElse { continue }
-                    return runCatching { Json.decodeFromJsonElement<ServerJsonRpcMessage>(parsed) }
+                    return runCatching { modelJson.decodeFromJsonElement<ServerJsonRpcMessage>(parsed) }
                 }
 
                 is SseAutoReconnectStreamState.Retrying -> {
