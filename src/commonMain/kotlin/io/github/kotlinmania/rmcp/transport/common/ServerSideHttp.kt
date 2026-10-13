@@ -7,6 +7,7 @@ import io.github.kotlinmania.bytes.Bytes
 import io.github.kotlinmania.http.StatusCode
 import io.github.kotlinmania.ssestream.Sse
 import io.github.kotlinmania.ssestream.toByteArray
+import io.github.kotlinmania.tokioutil.sync.cancellationtoken.CancellationToken
 import io.github.kotlinmania.uuid.Uuid
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -54,10 +55,10 @@ fun acceptedResponse(): SimpleHttpResponse =
 fun sseStreamResponse(
     stream: Iterable<ServerSseMessage>,
     keepAlive: Duration?,
-    cancelled: Boolean,
+    ct: CancellationToken = CancellationToken(),
 ): SimpleHttpResponse {
     val body =
-        if (cancelled) {
+        if (ct.isCancelled()) {
             Bytes.new()
         } else {
             val byteList = mutableListOf<ByteArray>()
@@ -88,6 +89,18 @@ fun sseStreamResponse(
             keepAlive?.let { put("X-Keep-Alive-Millis", it.inWholeMilliseconds.toString()) }
         }
     return SimpleHttpResponse(status = StatusCode.OK, headers = headers, body = body)
+}
+
+fun sseStreamResponse(
+    stream: Iterable<ServerSseMessage>,
+    keepAlive: Duration?,
+    cancelled: Boolean,
+): SimpleHttpResponse {
+    val ct = CancellationToken()
+    if (cancelled) {
+        ct.cancel()
+    }
+    return sseStreamResponse(stream, keepAlive, ct)
 }
 
 fun internalErrorResponse(context: String): (Throwable) -> SimpleHttpResponse =

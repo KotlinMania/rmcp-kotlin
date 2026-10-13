@@ -3,6 +3,7 @@ package io.github.kotlinmania.rmcp.transport.common
 
 import io.github.kotlinmania.bytes.Bytes
 import io.github.kotlinmania.http.StatusCode
+import io.github.kotlinmania.tokioutil.sync.cancellationtoken.CancellationToken
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -59,6 +60,20 @@ class ServerSideHttpTest {
             )
         assertEquals(StatusCode.OK, response.status)
         assertEquals(0, response.body.len())
+    }
+
+    @Test
+    fun testSseStreamResponseCancellationToken() {
+        val ct = CancellationToken()
+        val messages = listOf(ServerSseMessage(eventId = "1", message = JsonPrimitive("hello")))
+        val activeResponse = sseStreamResponse(stream = messages, keepAlive = null, ct = ct)
+        assertEquals(StatusCode.OK, activeResponse.status)
+        assertTrue(activeResponse.body.len() > 0)
+
+        ct.cancel()
+        val cancelledResponse = sseStreamResponse(stream = messages, keepAlive = null, ct = ct)
+        assertEquals(StatusCode.OK, cancelledResponse.status)
+        assertEquals(0, cancelledResponse.body.len())
     }
 
     @Test
