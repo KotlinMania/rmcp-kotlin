@@ -9,20 +9,15 @@ import io.github.kotlinmania.ssestream.Sse
 import io.github.kotlinmania.ssestream.toByteArray
 import io.github.kotlinmania.tokioutil.sync.cancellationtoken.CancellationToken
 import io.github.kotlinmania.uuid.Uuid
+import io.github.kotlinmania.uuid.newV4
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 typealias SessionId = String
 
-fun sessionId(): SessionId {
-    val bytes = Random.nextBytes(16)
-    bytes[6] = ((bytes[6].toInt() and 0x0f) or 0x40).toByte()
-    bytes[8] = ((bytes[8].toInt() and 0x3f) or 0x80).toByte()
-    return Uuid.fromBytes(bytes).toString()
-}
+fun sessionId(): SessionId = Uuid.newV4().toString()
 
 val DEFAULT_AUTO_PING_INTERVAL: Duration = 15.seconds
 
