@@ -121,7 +121,7 @@ internal class SseAutoReconnectStream<R, E>(
                     sse.retry?.let { serverRetryInterval = it }
                     sse.id?.let { lastEventId = it }
 
-                    val isMessageEvent = sse.event == null || sse.event == "" || sse.event == "message"
+                    val isMessageEvent = sse.event.isNullOrEmpty() || sse.event == "message"
                     if (!isMessageEvent) {
                         val handled = connector.handleControlEvent(sse)
                         val error = handled.exceptionOrNull()

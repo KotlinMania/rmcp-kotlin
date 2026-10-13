@@ -8,7 +8,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Transient
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -24,7 +23,6 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
@@ -1891,7 +1889,7 @@ data class CompletionContext(
      * Get all argument names.
      */
     fun argumentNames(): Set<String> =
-        arguments?.keys ?: emptySet()
+        arguments?.keys.orEmpty()
 
     companion object {
         /**
@@ -2832,7 +2830,7 @@ object ClientRequestSerializer : KSerializer<ClientRequest> {
                 ?: throw SerializationException("ClientRequest can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
-        val method = obj["method"]?.jsonPrimitive?.content ?: ""
+        val method = obj["method"]?.jsonPrimitive?.content.orEmpty()
         val json = jsonDecoder.json
 
         return when (method) {
@@ -2906,7 +2904,7 @@ object ClientNotificationSerializer : KSerializer<ClientNotification> {
                 ?: throw SerializationException("ClientNotification can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
-        val method = obj["method"]?.jsonPrimitive?.content ?: ""
+        val method = obj["method"]?.jsonPrimitive?.content.orEmpty()
         val json = jsonDecoder.json
 
         return when (method) {
@@ -3038,7 +3036,7 @@ object ServerRequestSerializer : KSerializer<ServerRequest> {
                 ?: throw SerializationException("ServerRequest can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
-        val method = obj["method"]?.jsonPrimitive?.content ?: ""
+        val method = obj["method"]?.jsonPrimitive?.content.orEmpty()
         val json = jsonDecoder.json
 
         return when (method) {
@@ -3119,7 +3117,7 @@ object ServerNotificationSerializer : KSerializer<ServerNotification> {
                 ?: throw SerializationException("ServerNotification can only be decoded from JSON")
         val element = jsonDecoder.decodeJsonElement()
         val obj = element.jsonObject
-        val method = obj["method"]?.jsonPrimitive?.content ?: ""
+        val method = obj["method"]?.jsonPrimitive?.content.orEmpty()
         val json = jsonDecoder.json
 
         return when (method) {
