@@ -999,6 +999,34 @@ tasks.matching { it.name.contains("GenerateSPMPackage") }.configureEach {
                     file.writeText(cleaned)
                 }
             }
+            spmDir.walkTopDown().filter { it.name == "IoGithubKotlinmaniaTokioKotlin.swift" }.forEach { file ->
+                var text = file.readText()
+                val oldEnum = "        public var value: ExportedKotlinPackages.io.github.kotlinmania.tokio.io.Poll {"
+                val newEnum = "        public var value: any ExportedKotlinPackages.io.github.kotlinmania.tokio.io.Poll {"
+                if (text.contains(oldEnum)) {
+                    text = text.replace(oldEnum, newEnum)
+                }
+                val conformanceAnchor = "extension KotlinRuntimeSupport._KotlinExistentialPenBox: ExportedKotlinPackages.io.github.kotlinmania.tokio.io._Poll {\n}"
+                val conformanceExtension =
+                    """
+extension KotlinRuntimeSupport._KotlinExistentialPenBox: ExportedKotlinPackages.io.github.kotlinmania.tokio.io._Poll {
+}
+extension IoGithubKotlinmaniaTokioKotlin._ExportedKotlinPackages_io_github_kotlinmania_tokio_io_Poll_Pending: ExportedKotlinPackages.io.github.kotlinmania.tokio.io.Poll, ExportedKotlinPackages.io.github.kotlinmania.tokio.io._Poll, ExportedKotlinPackages.io.github.kotlinmania.tokio.io.__Poll {
+    public func sealedType() -> ExportedKotlinPackages.io.github.kotlinmania.tokio.io.Poll_SealedType {
+        return .pending(IoGithubKotlinmaniaTokioKotlin._ExportedKotlinPackages_io_github_kotlinmania_tokio_io_Poll_Pending_SealedType(self))
+    }
+}
+extension IoGithubKotlinmaniaTokioKotlin._ExportedKotlinPackages_io_github_kotlinmania_tokio_io_Poll_Ready: ExportedKotlinPackages.io.github.kotlinmania.tokio.io.Poll, ExportedKotlinPackages.io.github.kotlinmania.tokio.io._Poll, ExportedKotlinPackages.io.github.kotlinmania.tokio.io.__Poll {
+    public func sealedType() -> ExportedKotlinPackages.io.github.kotlinmania.tokio.io.Poll_SealedType {
+        return .ready(IoGithubKotlinmaniaTokioKotlin._ExportedKotlinPackages_io_github_kotlinmania_tokio_io_Poll_Ready_SealedType(self))
+    }
+}
+                    """.trimIndent()
+                if (text.contains(conformanceAnchor) && !text.contains("extension IoGithubKotlinmaniaTokioKotlin._ExportedKotlinPackages_io_github_kotlinmania_tokio_io_Poll_Pending")) {
+                    text = text.replace(conformanceAnchor, conformanceExtension)
+                }
+                file.writeText(text)
+            }
         }
     }
 }
