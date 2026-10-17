@@ -90,4 +90,11 @@ class CommonTest {
         val result = schemaForOutput<TestObject>()
         assertTrue(result.isSuccess)
     }
+
+    @Test
+    fun testSchemaForJsonSchemaTarget() {
+        val schema = schemaForType(io.github.kotlinmania.schemars.jsonschemaimpls.StringSchema)
+        assertEquals(JsonPrimitive("https://json-schema.org/draft/2020-12/schema"), schema["\$schema"])
+        assertEquals(JsonPrimitive("string"), schema["type"])
+    }
 }
