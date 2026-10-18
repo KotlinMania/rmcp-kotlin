@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rmcp.model
 
 import io.github.kotlinmania.http.Extensions
-
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -22,7 +21,7 @@ class ExtensionTest {
         assertEquals(5, extensions.get<Int>())
         assertEquals(5, extensions.getMut<Int>())
 
-        val ext2 = extensions.copy()
+        val ext2 = extensions.clone()
 
         assertEquals(5, extensions.remove<Int>())
         assertNull(extensions.get<Int>())

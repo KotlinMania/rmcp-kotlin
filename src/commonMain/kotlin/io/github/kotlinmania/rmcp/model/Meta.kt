@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rmcp.model
 
 import io.github.kotlinmania.http.Extensions
-
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject

@@ -3,13 +3,6 @@ package io.github.kotlinmania.rmcp
 
 import io.github.kotlinmania.rmcp.model.ErrorData
 
-import io.github.kotlinmania.rmcp.model.ErrorData as ModelErrorData
-
-/**
- * Deprecated: use [ErrorData] instead. [ErrorData] could become [RmcpError] in the future.
- */
-@Deprecated("Use ErrorData instead")
-
 fun ErrorData.fmt(): String =
     buildString {
         append(code.value)
