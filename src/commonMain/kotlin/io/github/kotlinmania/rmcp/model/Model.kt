@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rmcp.model
 
+import io.github.kotlinmania.http.Extensions
+
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

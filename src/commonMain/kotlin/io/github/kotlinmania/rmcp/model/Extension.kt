@@ -1,9 +1,9 @@
 // port-lint: source model/extension.rs
 package io.github.kotlinmania.rmcp.model
 
-import io.github.kotlinmania.http.Extensions as HttpExtensions
+import io.github.kotlinmania.http.Extensions
 
-typealias Extensions = HttpExtensions
+import io.github.kotlinmania.http.Extensions as HttpExtensions
 
 fun Extensions(): Extensions = HttpExtensions.new()
 

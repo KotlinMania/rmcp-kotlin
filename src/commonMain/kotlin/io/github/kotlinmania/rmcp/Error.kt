@@ -1,15 +1,14 @@
 // port-lint: source error.rs
 package io.github.kotlinmania.rmcp
 
-import io.github.kotlinmania.rmcp.model.ErrorData as ModelErrorData
+import io.github.kotlinmania.rmcp.model.ErrorData
 
-typealias ErrorData = ModelErrorData
+import io.github.kotlinmania.rmcp.model.ErrorData as ModelErrorData
 
 /**
  * Deprecated: use [ErrorData] instead. [ErrorData] could become [RmcpError] in the future.
  */
 @Deprecated("Use ErrorData instead")
-typealias Error = ModelErrorData
 
 fun ErrorData.fmt(): String =
     buildString {

@@ -1,6 +1,8 @@
 // port-lint: tests model/extension.rs
 package io.github.kotlinmania.rmcp.model
 
+import io.github.kotlinmania.http.Extensions
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
