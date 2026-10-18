@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rmcp.model
 
+import kotlinx.serialization.json.JsonObject
+
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray

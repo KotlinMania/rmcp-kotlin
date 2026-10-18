@@ -4,7 +4,7 @@
 package io.github.kotlinmania.rmcp.handler.server
 
 import io.github.kotlinmania.rmcp.model.ErrorData
-import io.github.kotlinmania.rmcp.model.JsonObject
+import kotlinx.serialization.json.JsonObject
 import io.github.kotlinmania.schemars.JsonSchema
 import io.github.kotlinmania.schemars.Schema
 import io.github.kotlinmania.schemars.Value

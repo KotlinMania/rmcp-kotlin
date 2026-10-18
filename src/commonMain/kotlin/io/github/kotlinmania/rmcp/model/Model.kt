@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rmcp.model
 
+import kotlinx.serialization.json.JsonObject
+
 import io.github.kotlinmania.http.Extensions
 
 import kotlinx.serialization.KSerializer
@@ -29,14 +31,6 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 import kotlinx.serialization.json.JsonObject as KotlinxJsonObject
-
-/**
- * A JSON object type alias for convenient handling of JSON data.
- *
- * You can use [object] to create a JSON object quickly. This is commonly used
- * for storing arbitrary JSON data in MCP messages.
- */
-typealias JsonObject = KotlinxJsonObject
 
 /**
  * Unwrap the JSON object under [JsonElement].
