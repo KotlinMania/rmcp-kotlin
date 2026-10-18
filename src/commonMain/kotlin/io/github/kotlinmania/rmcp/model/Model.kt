@@ -2316,8 +2316,6 @@ data class ElicitationCompletionNotification(
     }
 }
 
-typealias ElicitationResponseNotification = ElicitationCompletionNotification
-
 /**
  * The result of a tool call operation.
  */
