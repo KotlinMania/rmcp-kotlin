@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rmcp.model
 
+import io.github.kotlinmania.http.Extensions
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -19,6 +20,7 @@ import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonEncoder
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
@@ -27,14 +29,6 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 import kotlinx.serialization.json.JsonObject as KotlinxJsonObject
-
-/**
- * A JSON object type alias for convenient handling of JSON data.
- *
- * You can use [object] to create a JSON object quickly. This is commonly used
- * for storing arbitrary JSON data in MCP messages.
- */
-typealias JsonObject = KotlinxJsonObject
 
 /**
  * Unwrap the JSON object under [JsonElement].
@@ -200,7 +194,7 @@ internal data class Request<P>(
     val method: String,
     val params: P,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions =
         extensions
@@ -216,7 +210,7 @@ internal data class RequestOptionalParam<P>(
     val method: String,
     val params: P? = null,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun <P> withParam(method: ConstString, params: P): RequestOptionalParam<P> =
@@ -228,7 +222,7 @@ internal data class RequestOptionalParam<P>(
 data class RequestNoParam(
     val method: String,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions =
         extensions
@@ -239,7 +233,7 @@ internal data class Notification<P>(
     val method: String,
     val params: P,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun <P> new(method: ConstString, params: P): Notification<P> =
@@ -251,7 +245,7 @@ internal data class Notification<P>(
 data class NotificationNoParam(
     val method: String,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 )
 
 @Serializable(with = JsonRpcRequestSerializer::class)
@@ -617,7 +611,7 @@ data class CancelledNotification(
     val method: String = CancelledNotificationMethod.value,
     val params: CancelledNotificationParam,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun new(params: CancelledNotificationParam): CancelledNotification =
@@ -636,7 +630,7 @@ data class CustomNotification(
     val method: String,
     val params: JsonElement? = null,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     /**
      * Deserialize parameters into a strongly-typed structure.
@@ -661,7 +655,7 @@ data class CustomRequest(
     val method: String,
     val params: JsonElement? = null,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     /**
      * Deserialize parameters into a strongly-typed structure.
@@ -688,7 +682,7 @@ data class InitializeRequest(
     val method: String = InitializeRequestMethod.value,
     val params: InitializeRequestParams = InitializeRequestParams.default(),
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -898,7 +892,7 @@ data class ProgressNotification(
     val method: String = ProgressNotificationMethod.value,
     val params: ProgressNotificationParam,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun new(params: ProgressNotificationParam): ProgressNotification =
@@ -949,7 +943,7 @@ data class ListResourcesRequest(
     val method: String = ListResourcesRequestMethod.value,
     val params: PaginatedRequestParams? = null,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun withParam(params: PaginatedRequestParams): ListResourcesRequest =
@@ -969,7 +963,7 @@ data class ListResourceTemplatesRequest(
     val method: String = ListResourceTemplatesRequestMethod.value,
     val params: PaginatedRequestParams? = null,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun withParam(params: PaginatedRequestParams): ListResourceTemplatesRequest =
@@ -1029,7 +1023,7 @@ data class ReadResourceRequest(
     val method: String = ReadResourceRequestMethod.value,
     val params: ReadResourceRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -1086,7 +1080,7 @@ data class SubscribeRequest(
     val method: String = SubscribeRequestMethod.value,
     val params: SubscribeRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -1134,7 +1128,7 @@ data class UnsubscribeRequest(
     val method: String = UnsubscribeRequestMethod.value,
     val params: UnsubscribeRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -1167,7 +1161,7 @@ data class ResourceUpdatedNotification(
     val method: String = ResourceUpdatedNotificationMethod.value,
     val params: ResourceUpdatedNotificationParam,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun new(params: ResourceUpdatedNotificationParam): ResourceUpdatedNotification =
@@ -1187,7 +1181,7 @@ data class ListPromptsRequest(
     val method: String = ListPromptsRequestMethod.value,
     val params: PaginatedRequestParams? = null,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun withParam(params: PaginatedRequestParams): ListPromptsRequest =
@@ -1245,7 +1239,7 @@ data class GetPromptRequest(
     val method: String = GetPromptRequestMethod.value,
     val params: GetPromptRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -1341,7 +1335,7 @@ data class SetLevelRequest(
     val method: String = SetLevelRequestMethod.value,
     val params: SetLevelRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -1382,7 +1376,7 @@ data class LoggingMessageNotification(
     val method: String = LoggingMessageNotificationMethod.value,
     val params: LoggingMessageNotificationParam,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun new(params: LoggingMessageNotificationParam): LoggingMessageNotification =
@@ -1399,7 +1393,7 @@ data class CreateMessageRequest(
     val method: String = CreateMessageRequestMethod.value,
     val params: CreateMessageRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -1941,7 +1935,7 @@ data class CompleteRequest(
     val method: String = CompleteRequestMethod.value,
     val params: CompleteRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -2285,7 +2279,7 @@ data class CreateElicitationRequest(
     val method: String = ElicitationCreateRequestMethod.value,
     val params: CreateElicitationRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -2312,15 +2306,13 @@ data class ElicitationCompletionNotification(
     val method: String = ElicitationResponseNotificationMethod.value,
     val params: ElicitationResponseNotificationParam,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun new(params: ElicitationResponseNotificationParam): ElicitationCompletionNotification =
             ElicitationCompletionNotification(params = params)
     }
 }
-
-typealias ElicitationResponseNotification = ElicitationCompletionNotification
 
 /**
  * The result of a tool call operation.
@@ -2415,7 +2407,7 @@ data class ListToolsRequest(
     val method: String = ListToolsRequestMethod.value,
     val params: PaginatedRequestParams? = null,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun new(params: PaginatedRequestParams? = null): ListToolsRequest =
@@ -2491,7 +2483,7 @@ data class CallToolRequest(
     val method: String = CallToolRequestMethod.value,
     val params: CallToolRequestParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -2554,7 +2546,7 @@ data class GetTaskInfoRequest(
     val method: String = GetTaskInfoMethod.value,
     val params: GetTaskInfoParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -2594,7 +2586,7 @@ data class ListTasksRequest(
     val method: String = ListTasksMethod.value,
     val params: PaginatedRequestParams? = null,
     @Transient
-    val extensions: Extensions = Extensions(),
+    val extensions: Extensions = Extensions.new(),
 ) {
     companion object {
         fun new(params: PaginatedRequestParams? = null): ListTasksRequest =
@@ -2611,7 +2603,7 @@ data class GetTaskResultRequest(
     val method: String = GetTaskResultMethod.value,
     val params: GetTaskResultParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 
@@ -2651,7 +2643,7 @@ data class CancelTaskRequest(
     val method: String = CancelTaskMethod.value,
     val params: CancelTaskParams,
     @Transient
-    override val extensions: Extensions = Extensions(),
+    override val extensions: Extensions = Extensions.new(),
 ) : GetExtensions {
     override fun extensionsMut(): Extensions = extensions
 

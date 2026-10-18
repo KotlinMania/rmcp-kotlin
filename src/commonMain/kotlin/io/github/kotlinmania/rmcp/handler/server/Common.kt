@@ -4,7 +4,6 @@
 package io.github.kotlinmania.rmcp.handler.server
 
 import io.github.kotlinmania.rmcp.model.ErrorData
-import io.github.kotlinmania.rmcp.model.JsonObject
 import io.github.kotlinmania.schemars.JsonSchema
 import io.github.kotlinmania.schemars.Schema
 import io.github.kotlinmania.schemars.Value
@@ -30,6 +29,7 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.serializer
 import kotlin.native.HiddenFromObjC
